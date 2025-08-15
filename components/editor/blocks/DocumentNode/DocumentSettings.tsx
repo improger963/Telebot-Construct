@@ -1,0 +1,75 @@
+import React, { useEffect, useState, useMemo, ChangeEvent } from 'react';
+import { useFlowStore } from '../../../../store/flowStore';
+import SettingRow from '../../SettingRow';
+
+const DocumentSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
+    const { nodes, updateNodeData } = useFlowStore();
+    const node = useMemo(() => nodes.find(n => n.id === nodeId), [nodes, nodeId]);
+
+    const [url, setUrl] = useState(node?.data.url || '');
+    const [caption, setCaption] = useState(node?.data.caption || '');
+
+    useEffect(() => {
+        if (node) {
+            setUrl(node.data.url || '');
+            setCaption(node.data.caption || '');
+        }
+    }, [node]);
+
+    if (!node) return null;
+
+    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newUrl = e.target.value;
+        setUrl(newUrl);
+        updateNodeData(nodeId, { url: newUrl });
+    };
+
+    const handleCaptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newCaption = e.target.value;
+        setCaption(newCaption);
+        updateNodeData(nodeId, { caption: newCaption });
+    };
+
+    const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setUrl(base64String);
+                updateNodeData(nodeId, { url: base64String });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <SettingRow label="Источник документа" helpText="Введите публичный URL или загрузите файл.">
+                <input
+                    type="text"
+                    value={url.startsWith('data:') ? '' : url}
+                    onChange={handleUrlChange}
+                    placeholder="https://example.com/document.pdf"
+                    className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
+                />
+                <div className="text-center my-2 text-text-secondary text-sm">или</div>
+                <label className="w-full text-center block cursor-pointer py-3 px-4 font-semibold text-primary-text bg-primary rounded-lg hover:bg-gray-200 transition-all">
+                    Загрузить документ
+                    <input type="file" onChange={handleFileUpload} className="hidden" />
+                </label>
+            </SettingRow>
+            <SettingRow label="Необязательная подпись">
+                <textarea
+                    value={caption}
+                    onChange={handleCaptionChange}
+                    rows={3}
+                    placeholder="Опишите документ..."
+                    className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
+                />
+            </SettingRow>
+        </div>
+    );
+};
+
+export default DocumentSettings;
