@@ -18,6 +18,8 @@ import CustomEdge from '../components/editor/edges/CustomEdge.tsx';
 import { ExportIcon } from '../components/icons/ExportIcon.tsx';
 import { ImportIcon } from '../components/icons/ImportIcon.tsx';
 import ConfirmationModal from '../components/ConfirmationModal.tsx';
+import ShareModal from '../components/ShareModal.tsx';
+import { ShareIcon } from '../components/icons/ShareIcon.tsx';
 
 
 const proOptions = { hideAttribution: true };
@@ -49,6 +51,7 @@ const BotEditorPageInternal: React.FC = () => {
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isImportConfirmOpen, setIsImportConfirmOpen] = useState(false);
   const [flowToImport, setFlowToImport] = useState<FlowData | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   
   const { screenToFlowPosition, getNode } = useReactFlow();
@@ -299,6 +302,19 @@ const BotEditorPageInternal: React.FC = () => {
                 <h1 className="text-xl font-bold text-text-primary">Редактирование: <span className="text-brand-emerald">{botName}</span></h1>
             </div>
             <div className="flex items-center gap-4">
+                <div className="flex items-center -space-x-2">
+                    <img src="https://i.pravatar.cc/32?u=a" alt="User 1" title="you@example.com" className="w-8 h-8 rounded-full border-2 border-slate-700"/>
+                    <img src="https://i.pravatar.cc/32?u=b" alt="User 2" title="teammate@example.com" className="w-8 h-8 rounded-full border-2 border-slate-700"/>
+                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-semibold text-text-secondary border-2 border-slate-700" title="Еще 2 пользователя">+2</div>
+                </div>
+                <button
+                    onClick={() => setIsShareModalOpen(true)}
+                    className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
+                    title="Поделиться"
+                >
+                  <ShareIcon className="h-5 w-5" />
+                  Поделиться
+                </button>
                 <input type="file" ref={importFileRef} onChange={handleFileChange} accept=".json" className="hidden" />
                 <button
                     onClick={handleImportClick}
@@ -386,10 +402,11 @@ const BotEditorPageInternal: React.FC = () => {
                 onConfirm={confirmImport}
                 title="Подтвердите импорт"
                 message="Вы уверены, что хотите импортировать новую схему? Текущая схема будет перезаписана."
-                confirmText="Да, импортировать"
+                confirmText="Импортировать и перезаписать"
                 cancelText="Отмена"
                 isDestructive={true}
             />
+            <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} botName={botName} />
         </div>
     </div>
   );

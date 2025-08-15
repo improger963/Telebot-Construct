@@ -7,7 +7,9 @@ import { MessageIcon } from '../components/icons/MessageIcon';
 import { CrmIcon } from '../components/icons/CrmIcon';
 import { CheckIcon } from '../components/icons/CheckIcon';
 import { PlusIcon } from '../components/icons/PlusIcon';
-
+import * as aiService from '../services/aiService';
+import { MagicIcon } from '../components/icons/MagicIcon';
+import { SpinnerIcon } from '../components/icons/SpinnerIcon';
 
 const StatCard: React.FC<{ title: string; value: string; icon: React.ReactNode }> = ({ title, value, icon }) => (
     <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6">
@@ -178,10 +180,53 @@ const BotsTable: React.FC<{ data: BotStats[] }> = ({ data }) => {
     );
 };
 
+const AIInsights: React.FC<{ stats: StatisticsData }> = ({ stats }) => {
+    const [insights, setInsights] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const getInsights = async () => {
+        setIsLoading(true);
+        try {
+            const result = await aiService.getPerformanceInsights(stats);
+            setInsights(result);
+        } catch (error) {
+            console.error(error);
+            setInsights('Не удалось получить аналитику. Попробуйте позже.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const formattedInsights = useMemo(() => {
+        return insights
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-text-primary">$1</strong>')
+            .replace(/•/g, '<li class="list-disc ml-4">')
+            .replace(/\n/g, '<br />');
+    }, [insights]);
+
+    return (
+        <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6">
+            <h3 className="text-lg font-bold text-text-primary mb-4">AI-Аналитика производительности</h3>
+            {insights ? (
+                <div className="prose prose-invert prose-p:text-text-secondary prose-strong:text-text-primary" dangerouslySetInnerHTML={{ __html: formattedInsights }} />
+            ) : (
+                <div className="text-center py-8">
+                    <p className="text-text-secondary mb-6">Получите персональные рекомендации по улучшению ваших ботов от нашего AI-аналитика.</p>
+                    <button onClick={getInsights} disabled={isLoading} className="group relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-brand-violet to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-violet/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center mx-auto disabled:opacity-50">
+                        {isLoading ? <SpinnerIcon className="w-5 h-5 mr-2 animate-spin" /> : <MagicIcon className="w-5 h-5 mr-2" />}
+                        {isLoading ? 'Анализ...' : 'Получить рекомендации'}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
+
 
 const StatisticsPage: React.FC = () => {
     const [stats, setStats] = useState<StatisticsData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'insights'>('dashboard');
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -237,11 +282,30 @@ const StatisticsPage: React.FC = () => {
                     <StatCard title="Средняя конверсия" value={`${stats.overall.avgConversion.toFixed(1)}%`} icon={<CheckIcon className="w-6 h-6 text-brand-amber" />} />
                     <StatCard title="Активных ботов" value={stats.overall.activeBots.toLocaleString()} icon={<ChartBarIcon className="w-6 h-6 text-brand-violet" />} />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <UsersPerBotChart data={stats.bots} />
-                    <MessageActivityChart data={stats.bots} />
+
+                <div className="bg-input p-1 rounded-xl flex gap-1 max-w-sm">
+                    <button onClick={() => setActiveTab('dashboard')} className={`w-1/2 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${activeTab === 'dashboard' ? 'bg-surface text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}>
+                        <ChartBarIcon className="w-5 h-5" /> Дашборд
+                    </button>
+                    <button onClick={() => setActiveTab('insights')} className={`w-1/2 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${activeTab === 'insights' ? 'bg-surface text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}>
+                        <MagicIcon className="w-5 h-5" /> AI Insights
+                    </button>
                 </div>
-                <BotsTable data={stats.bots} />
+                
+                {activeTab === 'dashboard' && (
+                    <div className="space-y-8 animate-fadeIn">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <UsersPerBotChart data={stats.bots} />
+                            <MessageActivityChart data={stats.bots} />
+                        </div>
+                        <BotsTable data={stats.bots} />
+                    </div>
+                )}
+                {activeTab === 'insights' && (
+                    <div className="animate-fadeIn">
+                        <AIInsights stats={stats} />
+                    </div>
+                )}
             </div>
         );
     };

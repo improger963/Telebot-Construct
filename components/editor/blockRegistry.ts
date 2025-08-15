@@ -19,6 +19,11 @@ import { locationBlockConfig } from './blocks/LocationNode/config';
 import { pollBlockConfig } from './blocks/PollNode/config';
 import { emailBlockConfig } from './blocks/EmailNode/config';
 import { crmBlockConfig } from './blocks/CrmNode/config';
+import { productCatalogBlockConfig } from './blocks/ProductCatalogNode/config';
+import { shoppingCartBlockConfig } from './blocks/ShoppingCartNode/config';
+import { paymentBlockConfig } from './blocks/PaymentNode/config';
+import { subscriptionBlockConfig } from './blocks/SubscriptionNode/config';
+import { miniAppBlockConfig } from './blocks/MiniAppNode/config';
 
 // A map for quick access by block type, used in SettingsPanel and BotEditorPage
 export const blockRegistry: Record<string, BlockConfig> = {
@@ -36,12 +41,17 @@ export const blockRegistry: Record<string, BlockConfig> = {
   [stickerBlockConfig.type]: stickerBlockConfig,
   [delayBlockConfig.type]: delayBlockConfig,
   [inlineKeyboardBlockConfig.type]: inlineKeyboardBlockConfig,
+  [productCatalogBlockConfig.type]: productCatalogBlockConfig,
+  [shoppingCartBlockConfig.type]: shoppingCartBlockConfig,
+  [paymentBlockConfig.type]: paymentBlockConfig,
+  [subscriptionBlockConfig.type]: subscriptionBlockConfig,
   [httpRequestBlockConfig.type]: httpRequestBlockConfig,
   [databaseBlockConfig.type]: databaseBlockConfig,
   [locationBlockConfig.type]: locationBlockConfig,
   [pollBlockConfig.type]: pollBlockConfig,
   [emailBlockConfig.type]: emailBlockConfig,
   [crmBlockConfig.type]: crmBlockConfig,
+  [miniAppBlockConfig.type]: miniAppBlockConfig,
 };
 
 // An array for convenient iteration, used in the Sidebar

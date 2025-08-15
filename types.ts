@@ -87,3 +87,28 @@ export interface StatisticsData {
     overall: OverallStats;
     bots: BotStats[];
 }
+
+// For Template Library
+export interface BotTemplate {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ComponentType<{className?: string}>;
+  flowData: FlowData;
+}
+
+// For E-commerce blocks
+export interface Product {
+    id: string;
+    name: string;
+    price: number;
+    description: string;
+    imageUrl: string;
+}
+
+export interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}

@@ -1,8 +1,8 @@
 import type { Node, Edge } from 'reactflow';
-import { BlockData } from '../types';
+import { BlockData, CartItem, Product } from '../types';
 
 export type SimulatorState = {
-  messages: Array<{ id: number; text: string; sender: 'bot' | 'user'; imageUrl?: string }>;
+  messages: Array<{ id: number; text: string; sender: 'bot' | 'user'; imageUrl?: string; timestamp: string, payment?: { title: string, description: string, amount: string } }>;
   status: 'running' | 'waiting' | 'finished' | 'error';
   waitingForInput?: {
     nodeId: string;
@@ -17,7 +17,19 @@ export type SimulatorState = {
     latVariable: string;
     lonVariable: string;
   };
+   waitingForPayment?: {
+    nodeId: string;
+   };
   availableButtons?: Array<{ text: string; handleId: string }>;
+  waitingForMiniAppLaunch?: {
+    nodeId: string;
+    buttonText: string;
+  };
+  miniAppIsOpen?: {
+    title: string;
+    url: string;
+    nodeId: string;
+  };
 };
 
 type StateChangeCallback = (
@@ -57,7 +69,10 @@ export class FlowRunner {
         waitingForInput: undefined,
         waitingForButtonInput: undefined,
         waitingForLocation: undefined,
+        waitingForPayment: undefined,
         availableButtons: undefined,
+        waitingForMiniAppLaunch: undefined,
+        miniAppIsOpen: undefined,
     });
 
     const startNode = this.nodes.find(n => n.type === 'startNode');
@@ -102,9 +117,19 @@ export class FlowRunner {
     }
   }
 
-  public async pressButton(handleId: string) {
+  public async pressButton(handleId: string, paymentResult?: 'success' | 'failure') {
     const currentState = this.onStateChange(undefined, true);
     if (currentState.status !== 'waiting') return;
+
+    if (currentState.waitingForPayment && paymentResult) {
+        this.addMessage(`[Симуляция оплаты: ${paymentResult === 'success' ? 'Успешно' : 'Ошибка'}]`, 'user');
+        this.onStateChange({ status: 'running', waitingForPayment: undefined });
+        const nextNode = this.findNextNode(currentState.waitingForPayment.nodeId, paymentResult);
+        if (nextNode) await this.processNode(nextNode.id);
+        else this.finishFlow();
+        return;
+    }
+
 
     const button = currentState.availableButtons?.find(b => b.handleId === handleId);
     if (!button) return;
@@ -128,6 +153,37 @@ export class FlowRunner {
         if (nextNode) await this.processNode(nextNode.id);
         else this.finishFlow();
     }
+  }
+
+  public async launchMiniApp() {
+    const currentState = this.onStateChange(undefined, true);
+    if (currentState.waitingForMiniAppLaunch) {
+        const nodeId = currentState.waitingForMiniAppLaunch.nodeId;
+        const node = this.nodes.find(n => n.id === nodeId);
+        if (node) {
+            this.addMessage(`[Открывает Mini App: "${node.data.title}"]`, 'user');
+            this.onStateChange({ 
+                status: 'waiting', 
+                waitingForMiniAppLaunch: undefined,
+                miniAppIsOpen: {
+                    title: this.substituteVariables(node.data.title),
+                    url: this.substituteVariables(node.data.url),
+                    nodeId: node.id
+                }
+            });
+        }
+    }
+  }
+
+  public async closeMiniApp() {
+      const currentState = this.onStateChange(undefined, true);
+      if (currentState.miniAppIsOpen) {
+          this.addMessage(`[Закрыл Mini App]`, 'user');
+          this.onStateChange({ status: 'running', miniAppIsOpen: undefined });
+          const nextNode = this.findNextNode(currentState.miniAppIsOpen.nodeId);
+          if (nextNode) await this.processNode(nextNode.id);
+          else this.finishFlow();
+      }
   }
   
   private async processNode(nodeId: string) {
@@ -173,6 +229,16 @@ export class FlowRunner {
             await this.handleEmailNode(node); break;
         case 'crmNode':
             await this.handleCrmNode(node); break;
+        case 'productCatalogNode':
+            await this.handleProductCatalogNode(node); break;
+        case 'shoppingCartNode':
+            await this.handleShoppingCartNode(node); break;
+        case 'paymentNode':
+            await this.handlePaymentNode(node); break;
+        case 'subscriptionNode':
+            await this.handleSubscriptionNode(node); break;
+        case 'miniAppNode':
+            await this.handleMiniAppNode(node); break;
         default:
             this.reportError(`Неизвестный тип блока: ${node.type}`);
     }
@@ -353,6 +419,103 @@ export class FlowRunner {
       else this.finishFlow();
   }
 
+  private async handleProductCatalogNode(node: Node) {
+    const products: Product[] = node.data.products || [];
+    if (products.length > 0) {
+        this.addMessage("Вот наши товары:", "bot");
+        for (const product of products) {
+            await new Promise(res => setTimeout(res, 300));
+            const message = `**${product.name}**\n${product.description}\nЦена: ${product.price} руб.`;
+            this.addMessage(message, "bot", product.imageUrl);
+        }
+    }
+    const nextNode = this.findNextNode(node.id);
+    if (nextNode) await this.processNode(nextNode.id);
+    else this.finishFlow();
+  }
+  
+  private async handleShoppingCartNode(node: Node) {
+      const { action, cartVariableName = 'cart', item } = node.data;
+      const cart: CartItem[] = this.variables[cartVariableName] || [];
+
+      switch (action) {
+          case 'ADD':
+              const newItem: CartItem = {
+                  id: this.substituteVariables(item.id),
+                  name: this.substituteVariables(item.name),
+                  price: parseFloat(this.substituteVariables(item.price)),
+                  quantity: parseInt(this.substituteVariables(item.quantity), 10),
+              };
+              const existingItem = cart.find(i => i.id === newItem.id);
+              if (existingItem) {
+                  existingItem.quantity += newItem.quantity;
+              } else {
+                  cart.push(newItem);
+              }
+              this.variables[cartVariableName] = cart;
+              this.addMessage(`"${newItem.name}" добавлен в корзину.`, 'bot');
+              break;
+          case 'VIEW':
+              if (cart.length === 0) {
+                  this.addMessage('Ваша корзина пуста.', 'bot');
+              } else {
+                  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+                  const cartContent = cart.map(i => `${i.name} x${i.quantity} - ${i.price * i.quantity} руб.`).join('\n');
+                  this.addMessage(`**В вашей корзине:**\n${cartContent}\n\n**Итого: ${total} руб.**`, 'bot');
+              }
+              break;
+          case 'CLEAR':
+              this.variables[cartVariableName] = [];
+              this.addMessage('Корзина очищена.', 'bot');
+              break;
+      }
+
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) await this.processNode(nextNode.id);
+      else this.finishFlow();
+  }
+
+  private async handlePaymentNode(node: Node) {
+    const { itemName, amount, currency } = node.data;
+    const title = this.substituteVariables(itemName);
+    const totalAmount = this.substituteVariables(amount);
+    
+    this.onStateChange({
+        messages: [...this.onStateChange(undefined, true).messages, { 
+            id: this.messageCounter++,
+            text: '',
+            sender: 'bot', 
+            timestamp: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+            payment: {
+                title: title,
+                description: "Нажмите для оплаты",
+                amount: `${totalAmount} ${currency}`
+            }
+        }],
+        status: 'waiting', 
+        waitingForPayment: { nodeId: node.id }
+    });
+  }
+
+  private async handleSubscriptionNode(node: Node) {
+      const { planName, price, period } = node.data;
+      this.addMessage(`[СИМУЛЯЦИЯ ПОДПИСКИ]\nПлан: ${planName}\nЦена: ${price} руб. / ${period}`, 'bot');
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) await this.processNode(nextNode.id);
+      else this.finishFlow();
+  }
+
+  private async handleMiniAppNode(node: Node) {
+    this.addMessage("Нажмите на кнопку ниже, чтобы открыть приложение:", 'bot');
+    this.onStateChange({
+        status: 'waiting',
+        waitingForMiniAppLaunch: {
+            nodeId: node.id,
+            buttonText: this.substituteVariables(node.data.buttonText)
+        }
+    });
+  }
+
 
   private findNextNode(sourceNodeId: string, sourceHandle?: string) {
     const edge = this.edges.find(e => e.source === sourceNodeId && e.sourceHandle === sourceHandle);
@@ -362,11 +525,11 @@ export class FlowRunner {
 
   private substituteVariables(text: string): string {
     if (!text) return '';
-    return text.replace(/\{(\w+)\}/g, (match, variableName) => this.variables[variableName] || match);
+    return String(text).replace(/\{(\w+)\}/g, (match, variableName) => this.variables[variableName] || match);
   }
   
   private addMessage(text: string, sender: 'bot' | 'user', imageUrl?: string) {
-    this.onStateChange({ messages: [...this.onStateChange(undefined, true).messages, { id: this.messageCounter++, text, sender, imageUrl }] });
+    this.onStateChange({ messages: [...this.onStateChange(undefined, true).messages, { id: this.messageCounter++, text, sender, imageUrl, timestamp: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) }] });
   }
 
   private finishFlow() {

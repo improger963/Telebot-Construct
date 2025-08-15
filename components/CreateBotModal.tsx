@@ -1,23 +1,25 @@
-
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBotStore } from '../store/botStore';
-import { FlowData, FormQuestion } from '../types';
+import { FlowData, FormQuestion, BotTemplate } from '../types';
 import { generateFlowFromForm } from '../utils/flowGenerator';
 import { CustomBotIcon } from './icons/CustomBotIcon';
 import { FormBotIcon } from './icons/FormBotIcon';
 import { MagicIcon } from './icons/MagicIcon';
 import { SpinnerIcon } from './icons/SpinnerIcon';
 import * as aiService from '../services/aiService';
+import { botTemplates } from '../utils/templates';
+import { TemplateIcon } from './icons/TemplateIcon';
+
 
 interface CreateBotModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type BotType = 'custom' | 'form' | 'ai';
+type BotType = 'custom' | 'form' | 'ai' | 'template';
 type AiModel = 'gemini' | 'openai';
-type WizardStep = 'type' | 'details';
+type WizardStep = 'type' | 'details' | 'templates';
 
 const WizardStepIndicator: React.FC<{ current: number, total: number }> = ({ current, total }) => (
     <div className="flex justify-center items-center gap-2 mb-6">
@@ -45,6 +47,7 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
 
   const [step, setStep] = useState<WizardStep>('type');
   const [botType, setBotType] = useState<BotType | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<BotTemplate | null>(null);
   const [botName, setBotName] = useState('');
   const [botToken, setBotToken] = useState('');
   const [questions, setQuestions] = useState<FormQuestion[]>([
@@ -70,11 +73,22 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
       setAiModel('gemini');
       setIsSubmitting(false);
       setIsGenerating(false);
+      setSelectedTemplate(null);
     }
   }, [isOpen]);
 
   const handleTypeSelect = (type: BotType) => {
     setBotType(type);
+    if (type === 'template') {
+        setStep('templates');
+    } else {
+        setStep('details');
+    }
+  };
+
+  const handleTemplateSelect = (template: BotTemplate) => {
+    setSelectedTemplate(template);
+    setBotName(template.name);
     setStep('details');
   };
 
@@ -108,6 +122,8 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
             setIsGenerating(true);
             initialFlow = await aiService.generateFlowFromPrompt(aiPrompt, aiModel);
             setIsGenerating(false);
+        } else if (botType === 'template' && selectedTemplate) {
+            initialFlow = selectedTemplate.flowData;
         }
 
         const newBot = await createBot({ name: botName, telegramToken: botToken }, initialFlow);
@@ -121,6 +137,15 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
         setIsGenerating(false);
     }
   };
+  
+  const handleBack = () => {
+    if (step === 'details') {
+        if(botType === 'template') setStep('templates');
+        else setStep('type');
+    } else if (step === 'templates') {
+        setStep('type');
+    }
+  }
 
   const renderContent = () => {
     if (step === 'type') {
@@ -135,21 +160,49 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
                     <h3 className="font-bold text-lg text-text-primary">Создать с помощью ИИ</h3>
                     <p className="text-sm text-text-secondary">Опишите своего бота простым языком, и пусть ИИ построит схему за вас. Самый быстрый способ начать.</p>
                 </button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button onClick={() => handleTypeSelect('custom')} className="p-6 bg-slate-800/50 rounded-2xl hover:ring-2 hover:ring-brand-emerald transition-all text-left space-y-2 group border border-slate-700">
-                        <CustomBotIcon className="w-10 h-10 text-brand-emerald mb-2 transition-transform group-hover:scale-110"/>
-                        <h3 className="font-bold text-lg text-text-primary">Пользовательский бот</h3>
-                        <p className="text-sm text-text-secondary">Начните с чистого холста и создайте своего бота с нуля. Лучше всего подходит для уникальной логики.</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onClick={() => handleTypeSelect('template')} className="p-6 bg-slate-800/50 rounded-2xl hover:ring-2 hover:ring-brand-emerald transition-all text-left space-y-2 group border border-slate-700">
+                        <TemplateIcon className="w-10 h-10 text-brand-emerald mb-2 transition-transform group-hover:scale-110"/>
+                        <h3 className="font-bold text-lg text-text-primary">Шаблоны</h3>
+                        <p className="text-sm text-text-secondary">Начните с готовых сценариев для разных задач.</p>
                     </button>
                     <button onClick={() => handleTypeSelect('form')} className="p-6 bg-slate-800/50 rounded-2xl hover:ring-2 hover:ring-brand-emerald transition-all text-left space-y-2 group border border-slate-700">
                         <FormBotIcon className="w-10 h-10 text-brand-emerald mb-2 transition-transform group-hover:scale-110"/>
                         <h3 className="font-bold text-lg text-text-primary">Форм-бот</h3>
-                        <p className="text-sm text-text-secondary">Быстро создайте бота, который задает серию вопросов и сохраняет ответы.</p>
+                        <p className="text-sm text-text-secondary">Быстро создайте бота-анкету для сбора информации.</p>
+                    </button>
+                    <button onClick={() => handleTypeSelect('custom')} className="p-6 bg-slate-800/50 rounded-2xl hover:ring-2 hover:ring-brand-emerald transition-all text-left space-y-2 group border border-slate-700">
+                        <CustomBotIcon className="w-10 h-10 text-brand-emerald mb-2 transition-transform group-hover:scale-110"/>
+                        <h3 className="font-bold text-lg text-text-primary">С нуля</h3>
+                        <p className="text-sm text-text-secondary">Начните с чистого холста для уникальной логики.</p>
                     </button>
                 </div>
             </div>
         </>
       );
+    }
+    
+    if (step === 'templates') {
+        return (
+            <>
+                <WizardStepIndicator current={1} total={2} />
+                <div className="flex items-center gap-4 mb-6">
+                    <button type="button" onClick={handleBack} className="p-2 rounded-full hover:bg-input transition-colors -ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <h2 className="text-2xl font-bold">Выберите шаблон</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-2">
+                    {botTemplates.map(template => (
+                        <button key={template.id} onClick={() => handleTemplateSelect(template)} className="p-4 bg-slate-800/50 rounded-xl hover:ring-2 hover:ring-brand-emerald transition-all text-left space-y-2 group border border-slate-700 flex flex-col items-center text-center">
+                            <template.icon className="w-12 h-12 text-brand-emerald mb-2 transition-transform group-hover:scale-110"/>
+                            <h3 className="font-bold text-md text-text-primary">{template.name}</h3>
+                            <p className="text-xs text-text-secondary flex-grow">{template.description}</p>
+                        </button>
+                    ))}
+                </div>
+            </>
+        )
     }
 
     if (step === 'details') {
@@ -157,7 +210,7 @@ const CreateBotModal: React.FC<CreateBotModalProps> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit}>
             <WizardStepIndicator current={2} total={2} />
             <div className="flex items-center gap-4 mb-6">
-                <button type="button" onClick={() => setStep('type')} className="p-2 rounded-full hover:bg-input transition-colors -ml-2">
+                <button type="button" onClick={handleBack} className="p-2 rounded-full hover:bg-input transition-colors -ml-2">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <h2 className="text-2xl font-bold">Детали бота</h2>

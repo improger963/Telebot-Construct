@@ -26,7 +26,8 @@ const BlocksPanel: React.FC = () => {
     const botActionTypes = ['messageNode', 'inlineKeyboardNode', 'delayNode', 'randomMessageNode'];
     const userInputLogicTypes = ['inputNode', 'buttonInputNode', 'conditionNode', 'switchNode'];
     const mediaTypes = ['imageNode', 'videoNode', 'audioNode', 'documentNode', 'stickerNode'];
-    const integrationTypes = ['httpRequestNode', 'databaseNode'];
+    const ecommerceTypes = ['productCatalogNode', 'shoppingCartNode', 'paymentNode', 'subscriptionNode'];
+    const integrationTypes = ['httpRequestNode', 'databaseNode', 'miniAppNode'];
     const toolTypes = ['locationNode', 'pollNode', 'emailNode', 'crmNode'];
 
     const getBlocks = (types: string[]) => blockConfigs.filter(c => types.includes(c.type));
@@ -62,6 +63,18 @@ const BlocksPanel: React.FC = () => {
             
             <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">Медиа</h4>
              {getBlocks(mediaTypes).map(config => (
+                <NodeItem 
+                    key={config.type}
+                    type={config.type}
+                    label={config.name}
+                    onDragStart={(event) => onDragStart(event, config.type)}
+                    color={config.color}
+                    icon={<config.icon className="h-5 w-5 text-white" />}
+                />
+            ))}
+
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">E-commerce</h4>
+             {getBlocks(ecommerceTypes).map(config => (
                 <NodeItem 
                     key={config.type}
                     type={config.type}

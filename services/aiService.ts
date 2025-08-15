@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { FlowData, NodeSuggestion } from '../types';
+import { FlowData, NodeSuggestion, StatisticsData } from '../types';
 import { Node, Edge } from 'reactflow';
 
 // Initialize the Gemini client, assuming API_KEY is in the environment
@@ -98,7 +98,7 @@ JSON должен соответствовать предоставленной 
     - data: { "seconds": 3 }
 7.  'buttonInputNode': Задает вопрос и предоставляет кнопки для ответа. Сохраняет текст выбранной кнопки в переменную. Имеет один выход.
     - data: { "question": "Ваш вопрос?", "variableName": "сохраненный_выбор", "buttons": [{ "id": "btn_abc", "text": "Выбор 1" }] }
-8.  'inlineKeyboardNode': Похож на 'messageNode', отправляет сообщение с кнопками, которые создают отдельные пути вывода. Может быть организован в столбцы.
+8.  'inlineKeyboardNode': Похож на 'messageNode', отправляет сообщение с прикреплённой к нему клавиатурой, которые создают отдельные пути вывода. Может быть организован в столбцы.
     - data: { "text": "Ваше сообщение здесь.", "buttons": [{ "id": "btn_123", "text": "Вариант 1" }], "columns": 2 }
 
 
@@ -266,5 +266,34 @@ export const getNodeSuggestions = async (sourceNode: Node, allNodes: Node[], all
                 suggestionText: 'Добавить сообщение'
             }
         ];
+    }
+};
+
+
+export const getPerformanceInsights = async (stats: StatisticsData): Promise<string> => {
+    const systemInstruction = `Вы — эксперт-аналитик по Telegram-ботам. Ваша задача — проанализировать предоставленные данные о производительности и дать краткие, действенные советы по улучшению. Ответ должен быть в формате Markdown.
+    - Определите ботов с низкой производительностью (низкое количество пользователей, сообщений или низкая конверсия).
+    - Предложите конкретные улучшения. Например, если у бота много пользователей, но мало сообщений, возможно, начальное сообщение недостаточно привлекательно. Если конверсия низкая, возможно, воронка слишком сложная.
+    - Отметьте ботов, которые работают хорошо, и укажите, почему.
+    - Форматируйте ответ в виде маркированного списка. Используйте **жирный** шрифт для выделения ключевых моментов.`;
+
+    const prompt = `Вот данные о производительности моих ботов. Проанализируй их и дай мне советы по улучшению.
+    
+    \`\`\`json
+    ${JSON.stringify(stats, null, 2)}
+    \`\`\``;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                systemInstruction: systemInstruction,
+            },
+        });
+        return response.text;
+    } catch (error) {
+        console.error('Error getting AI performance insights:', error);
+        return "К сожалению, не удалось получить аналитику от ИИ. Пожалуйста, попробуйте еще раз позже.";
     }
 };
