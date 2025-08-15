@@ -12,9 +12,13 @@ import WelcomeGuide from '../components/WelcomeGuide.tsx';
 import BotSimulator from '../components/simulator/BotSimulator.tsx';
 import { PlayIcon } from '../components/icons/PlayIcon.tsx';
 import NodeSuggestions from '../components/editor/NodeSuggestions.tsx';
-import { NodeSuggestion } from '../types.ts';
+import { NodeSuggestion, FlowData } from '../types.ts';
 import ContextMenu from '../components/editor/ContextMenu.tsx';
 import CustomEdge from '../components/editor/edges/CustomEdge.tsx';
+import { ExportIcon } from '../components/icons/ExportIcon.tsx';
+import { ImportIcon } from '../components/icons/ImportIcon.tsx';
+import ConfirmationModal from '../components/ConfirmationModal.tsx';
+
 
 const proOptions = { hideAttribution: true };
 
@@ -39,9 +43,13 @@ const BotEditorPageInternal: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const importFileRef = useRef<HTMLInputElement>(null);
   
   const [showWelcome, setShowWelcome] = useState(!localStorage.getItem('hasSeenWelcomeGuide'));
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+  const [isImportConfirmOpen, setIsImportConfirmOpen] = useState(false);
+  const [flowToImport, setFlowToImport] = useState<FlowData | null>(null);
+
   
   const { screenToFlowPosition, getNode } = useReactFlow();
 
@@ -229,6 +237,59 @@ const BotEditorPageInternal: React.FC = () => {
     },
     [setMenu]
   );
+  
+  const handleExport = () => {
+    const flowJSON = JSON.stringify({ nodes, edges }, null, 2);
+    const blob = new Blob([flowJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${botName.replace(/\s+/g, '_')}_flow.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  
+  const handleImportClick = () => {
+    importFileRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          const parsedFlow = JSON.parse(content);
+          if (Array.isArray(parsedFlow.nodes) && Array.isArray(parsedFlow.edges)) {
+            setFlowToImport(parsedFlow);
+            setIsImportConfirmOpen(true);
+          } else {
+            alert('Ошибка: Неверный формат файла. Файл должен содержать массивы "nodes" и "edges".');
+          }
+        } catch (error) {
+          alert('Ошибка: Не удалось прочитать или проанализировать файл.');
+        } finally {
+            // Reset file input to allow re-uploading the same file
+            if(importFileRef.current) {
+                importFileRef.current.value = "";
+            }
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const confirmImport = () => {
+    if (flowToImport) {
+      setFlow(flowToImport);
+    }
+    setIsImportConfirmOpen(false);
+    setFlowToImport(null);
+  };
+
 
   return (
     <div className="h-[calc(100vh-80px)] w-full flex flex-col bg-background overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
@@ -238,12 +299,27 @@ const BotEditorPageInternal: React.FC = () => {
                 <h1 className="text-xl font-bold text-text-primary">Редактирование: <span className="text-brand-emerald">{botName}</span></h1>
             </div>
             <div className="flex items-center gap-4">
+                <input type="file" ref={importFileRef} onChange={handleFileChange} accept=".json" className="hidden" />
+                <button
+                    onClick={handleImportClick}
+                    className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
+                    title="Импорт схемы"
+                >
+                  <ImportIcon className="h-5 w-5" />
+                </button>
+                 <button
+                    onClick={handleExport}
+                    className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
+                    title="Экспорт схемы"
+                >
+                  <ExportIcon className="h-5 w-5" />
+                </button>
                 <button
                     onClick={() => setIsSimulatorOpen(true)}
                     className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   <PlayIcon className="h-5 w-5" />
-                  Тестировать бота
+                  Тестировать
                 </button>
                 <button
                     onClick={handleSave}
@@ -258,7 +334,7 @@ const BotEditorPageInternal: React.FC = () => {
                   ) : isSaving ? (
                     'Сохранение...'
                   ) : (
-                    'Сохранить схему'
+                    'Сохранить'
                   )}
                 </button>
             </div>
@@ -304,6 +380,16 @@ const BotEditorPageInternal: React.FC = () => {
               />
             )}
             {menu && <ContextMenu {...menu} onClose={() => setMenu(null)} />}
+            <ConfirmationModal
+                isOpen={isImportConfirmOpen}
+                onClose={() => setIsImportConfirmOpen(false)}
+                onConfirm={confirmImport}
+                title="Подтвердите импорт"
+                message="Вы уверены, что хотите импортировать новую схему? Текущая схема будет перезаписана."
+                confirmText="Да, импортировать"
+                cancelText="Отмена"
+                isDestructive={true}
+            />
         </div>
     </div>
   );

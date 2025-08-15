@@ -23,8 +23,8 @@ const BlocksPanel: React.FC = () => {
         event.dataTransfer.effectAllowed = 'move';
     };
 
-    const botActionTypes = ['messageNode', 'inlineKeyboardNode', 'imageNode', 'delayNode'];
-    const userInputLogicTypes = ['inputNode', 'buttonInputNode', 'conditionNode'];
+    const botActionTypes = ['messageNode', 'inlineKeyboardNode', 'imageNode', 'delayNode', 'randomMessageNode'];
+    const userInputLogicTypes = ['inputNode', 'buttonInputNode', 'conditionNode', 'switchNode'];
 
     const botActionBlocks = blockConfigs.filter(c => botActionTypes.includes(c.type));
     const userInputLogicBlocks = blockConfigs.filter(c => userInputLogicTypes.includes(c.type));

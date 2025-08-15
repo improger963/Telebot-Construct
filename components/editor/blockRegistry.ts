@@ -7,14 +7,18 @@ import { inlineKeyboardBlockConfig } from './blocks/InlineKeyboardNode/config';
 import { imageBlockConfig } from './blocks/ImageNode/config';
 import { delayBlockConfig } from './blocks/DelayNode/config';
 import { buttonInputBlockConfig } from './blocks/ButtonInputNode/config';
+import { randomMessageBlockConfig } from './blocks/RandomMessageNode/config';
+import { switchBlockConfig } from './blocks/SwitchNode/config';
 
 // A map for quick access by block type, used in SettingsPanel and BotEditorPage
 export const blockRegistry: Record<string, BlockConfig> = {
   [startBlockConfig.type]: startBlockConfig,
   [messageBlockConfig.type]: messageBlockConfig,
+  [randomMessageBlockConfig.type]: randomMessageBlockConfig,
   [inputBlockConfig.type]: inputBlockConfig,
   [buttonInputBlockConfig.type]: buttonInputBlockConfig,
   [conditionBlockConfig.type]: conditionBlockConfig,
+  [switchBlockConfig.type]: switchBlockConfig,
   [imageBlockConfig.type]: imageBlockConfig,
   [delayBlockConfig.type]: delayBlockConfig,
   [inlineKeyboardBlockConfig.type]: inlineKeyboardBlockConfig,

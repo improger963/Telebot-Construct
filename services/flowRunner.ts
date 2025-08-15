@@ -144,6 +144,9 @@ export class FlowRunner {
             case 'inlineKeyboardNode':
                 this.handleMessageNode(node);
                 break;
+            case 'randomMessageNode':
+                this.handleRandomMessageNode(node);
+                break;
             case 'inputNode':
                 this.handleInputNode(node);
                 break;
@@ -152,6 +155,9 @@ export class FlowRunner {
                 break;
             case 'conditionNode':
                 this.handleConditionNode(node);
+                break;
+            case 'switchNode':
+                this.handleSwitchNode(node);
                 break;
             case 'imageNode':
                 this.handleImageNode(node);
@@ -191,6 +197,24 @@ export class FlowRunner {
       }
     }
   }
+  
+  private handleRandomMessageNode(node: Node) {
+    const messages = node.data.messages || [];
+    if (messages.length > 0) {
+        const randomIndex = Math.floor(Math.random() * messages.length);
+        const randomMsg = messages[randomIndex];
+        const text = this.substituteVariables(randomMsg.text);
+        this.addMessage(text, 'bot');
+    }
+
+    const nextNode = this.findNextNode(node.id);
+    if (nextNode) {
+        this.processNode(nextNode.id);
+    } else {
+        this.finishFlow();
+    }
+  }
+
 
   private handleInputNode(node: Node) {
     const question = this.substituteVariables(node.data.question);
@@ -257,6 +281,23 @@ export class FlowRunner {
     }
   }
   
+  private handleSwitchNode(node: Node) {
+    const variableName = node.data.variable;
+    const variableValue = String(this.variables[variableName] || '');
+    const cases = node.data.cases || [];
+
+    const matchedCase = cases.find(c => c.value === variableValue);
+    const sourceHandle = matchedCase ? matchedCase.id : 'default';
+    
+    const nextNode = this.findNextNode(node.id, sourceHandle);
+
+    if (nextNode) {
+        this.processNode(nextNode.id);
+    } else {
+        this.finishFlow();
+    }
+  }
+
   private findNextNode(sourceNodeId: string, sourceHandle?: string) {
     const edge = this.edges.find(e => e.source === sourceNodeId && e.sourceHandle === sourceHandle);
     if (edge) {
