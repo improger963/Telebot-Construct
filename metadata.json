@@ -1,0 +1,5 @@
+{
+  "name": "TeleBot Constructor",
+  "description": "A SaaS platform to visually create and publish Telegram chat-bots and Mini Apps without writing any code.",
+  "requestFramePermissions": []
+}

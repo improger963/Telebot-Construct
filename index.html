@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TeleBot Constructor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://esm.sh/reactflow@11.11.4/dist/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      /* Base Animations */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+      @keyframes slideInFromRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      
+      /* New Animations for Premium Feel */
+      @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7); }
+        50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(52, 199, 89, 0); }
+      }
+       @keyframes pulse-orange {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+      }
+
+
+      /* Animation Classes */
+      .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+      .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+      .animate-scaleIn { animation: scaleIn 0.3s ease-out forwards; }
+      .animate-slideInFromRight { animation: slideInFromRight 0.4s ease-out forwards; }
+      .shimmer-bg {
+        animation: shimmer 2s infinite linear;
+        background: linear-gradient(to right, #2c2c2e 8%, #3a3a3c 18%, #2c2c2e 33%);
+        background-size: 1000px 100%;
+      }
+      
+      /* Global Styles */
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #1C1C1E;
+        background-image: radial-gradient(circle at 1px 1px, rgba(242, 242, 247, 0.05) 1px, transparent 0);
+        background-size: 20px 20px;
+      }
+
+      /* React Flow Enhancements */
+      .react-flow__handle {
+        transition: all 0.2s ease;
+      }
+      .react-flow__handle:hover {
+        transform: scale(1.5);
+        animation: pulse 1.5s infinite;
+      }
+      .react-flow__node {
+        transition: box-shadow 0.3s ease, transform 0.2s ease;
+      }
+      .react-flow__node.selected > div {
+        box-shadow: 0 0 0 2px #34C759, 0 0 20px 5px rgba(52, 199, 89, 0.5);
+      }
+      
+      /* Active node highlight for simulator */
+      .react-flow__node > .node-active-highlight {
+        box-shadow: 0 0 0 2px #FF9F0A, 0 0 20px 5px rgba(255, 159, 10, 0.5);
+        animation: pulse-orange 1.5s infinite ease-in-out;
+      }
+      .react-flow__node.highlight-node > div {
+        box-shadow: 0 0 0 2px #0A84FF, 0 0 20px 5px rgba(10, 132, 255, 0.5);
+      }
+
+
+      /* Welcome Guide Styles */
+      .welcome-guide {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      .welcome-guide-step {
+        animation: fadeInUp 0.5s ease-out forwards;
+      }
+
+      /* Simulator Panel Styles */
+      .simulator-panel {
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translateX(110%);
+      }
+      .simulator-panel.open {
+        transform: translateX(0);
+      }
+      
+      /* AI Suggestions Popup */
+      .ai-suggestions-popup {
+        animation: scaleIn 0.2s ease-out forwards;
+        transform-origin: top left; /* Adjust based on positioning logic */
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              'background': '#1C1C1E',
+              'surface': '#2C2C2E',
+              'input': '#3A3A3C',
+              'primary': '#F2F2F7',
+              'primary-text': '#1C1C1E',
+              'brand-green': '#34C759',
+              'brand-blue': '#0A84FF',
+              'brand-purple': '#BF5AF2',
+              'brand-orange': '#FF9F0A',
+              'brand-red': '#FF453A',
+              'text-primary': '#F2F2F7',
+              'text-secondary': '#8E8E93',
+              'accent': '#4a5568',
+            },
+            boxShadow: {
+              'glow-green': '0 0 15px 5px rgba(52, 199, 89, 0.3)',
+            }
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "zustand/": "https://esm.sh/zustand@^5.0.7/",
+    "zustand": "https://esm.sh/zustand@^5.0.7",
+    "reactflow/": "https://esm.sh/reactflow@^11.11.4/",
+    "reactflow": "https://esm.sh/reactflow@^11.11.4",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.8.0",
+    "@google/genai": "https://esm.sh/@google/genai"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background text-text-primary">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
