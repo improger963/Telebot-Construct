@@ -10,11 +10,11 @@ const z = {
 
 export const startBlockConfig: BlockConfig = {
   type: 'startNode',
-  name: 'Start',
+  name: 'Старт',
   icon: StartIcon,
   color: 'bg-brand-green', // Not used in sidebar, but good for consistency
   component: StartNode,
   settingsComponent: StartSettings,
-  initialData: { label: 'Start' },
+  initialData: { label: 'Старт' },
   validationSchema: z.object({}),
 };

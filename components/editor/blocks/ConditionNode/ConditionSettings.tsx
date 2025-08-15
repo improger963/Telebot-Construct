@@ -34,21 +34,21 @@ const ConditionSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
     return (
         <div className="space-y-6">
-          <SettingRow label="Variable to Check" helpText="Use `userInput` for the last message, or a variable name.">
+          <SettingRow label="Проверяемая переменная" helpText="Используйте `userInput` для последнего сообщения или имя переменной.">
                <input
                   type="text"
                   value={variable}
                   onChange={handleVariableChange}
-                  placeholder="e.g., userInput"
+                  placeholder="напр. userInput"
                   className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
               />
           </SettingRow>
-          <SettingRow label="Value to Contain" helpText="The condition is true if the variable contains this text.">
+          <SettingRow label="Значение для проверки" helpText="Условие будет истинным, если переменная содержит этот текст.">
                <input
                   type="text"
                   value={value}
                   onChange={handleValueChange}
-                  placeholder="e.g., 'yes' or 'help'"
+                  placeholder="напр. 'да' или 'помощь'"
                   className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
               />
           </SettingRow>

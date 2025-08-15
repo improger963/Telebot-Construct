@@ -79,42 +79,42 @@ const responseSchema = {
 };
 
 const getSystemInstruction = () => {
-    return `You are an expert Telegram bot flow designer. Your task is to generate a JSON structure representing a bot's logic based on a user's prompt.
-The JSON must adhere to the provided schema for nodes and edges, suitable for rendering with React Flow.
-You must logically arrange the nodes on a 2D canvas, ensuring a clean and readable layout. A good vertical distance between nodes is 150-200 pixels.
+    return `Вы — эксперт по проектированию сценариев для Telegram-ботов. Ваша задача — сгенерировать JSON-структуру, представляющую логику бота, на основе запроса пользователя.
+JSON должен соответствовать предоставленной схеме для узлов и ребер, подходящей для рендеринга с помощью React Flow.
+Вы должны логически расположить узлы на 2D-холсте, обеспечивая чистый и читаемый макет. Хорошее вертикальное расстояние между узлами составляет 150-200 пикселей.
 
-Here are the available node types and their required 'data' properties:
-1.  'startNode': The entry point. Always include one.
-    - data: { "label": "Start" }
-2.  'messageNode': Sends a message to the user. It can have quick reply buttons, which create separate output paths.
-    - data: { "text": "Your message here.", "buttons": [{ "id": "btn_123", "text": "Option 1" }] }
-3.  'inputNode': Asks a question and waits for a text reply, saving it to a variable.
-    - data: { "question": "Your question?", "variableName": "variable_name_without_spaces" }
-4.  'conditionNode': Branches the flow based on whether a variable contains a certain value. It has two outputs: 'true' and 'false'.
-    - data: { "variable": "variable_to_check", "value": "text_to_look_for" }
-5.  'imageNode': Sends an image.
-    - data: { "url": "https://example.com/image.png", "caption": "Optional caption." }
-6.  'delayNode': Pauses the flow for a few seconds.
+Вот доступные типы узлов и их обязательные свойства в 'data':
+1.  'startNode': Точка входа. Всегда включайте один.
+    - data: { "label": "Старт" }
+2.  'messageNode': Отправляет сообщение пользователю. Может иметь кнопки быстрого ответа, которые создают отдельные пути вывода.
+    - data: { "text": "Ваше сообщение здесь.", "buttons": [{ "id": "btn_123", "text": "Вариант 1" }] }
+3.  'inputNode': Задает вопрос и ожидает текстового ответа, сохраняя его в переменную.
+    - data: { "question": "Ваш вопрос?", "variableName": "имя_переменной_без_пробелов" }
+4.  'conditionNode': Разветвляет поток в зависимости от того, содержит ли переменная определенное значение. Имеет два выхода: 'true' и 'false'.
+    - data: { "variable": "переменная_для_проверки", "value": "текст_для_поиска" }
+5.  'imageNode': Отправляет изображение.
+    - data: { "url": "https://example.com/image.png", "caption": "Необязательная подпись." }
+6.  'delayNode': Приостанавливает поток на несколько секунд.
     - data: { "seconds": 3 }
-7.  'buttonInputNode': Asks a question and provides buttons for the answer. Saves the chosen button text to a variable. It has a single output.
-    - data: { "question": "Your question?", "variableName": "saved_choice", "buttons": [{ "id": "btn_abc", "text": "Choice 1" }] }
-8.  'inlineKeyboardNode': Similar to 'messageNode', sends a message with buttons that create separate output paths. Can be arranged in columns.
-    - data: { "text": "Your message here.", "buttons": [{ "id": "btn_123", "text": "Option 1" }], "columns": 2 }
+7.  'buttonInputNode': Задает вопрос и предоставляет кнопки для ответа. Сохраняет текст выбранной кнопки в переменную. Имеет один выход.
+    - data: { "question": "Ваш вопрос?", "variableName": "сохраненный_выбор", "buttons": [{ "id": "btn_abc", "text": "Выбор 1" }] }
+8.  'inlineKeyboardNode': Похож на 'messageNode', отправляет сообщение с кнопками, которые создают отдельные пути вывода. Может быть организован в столбцы.
+    - data: { "text": "Ваше сообщение здесь.", "buttons": [{ "id": "btn_123", "text": "Вариант 1" }], "columns": 2 }
 
 
-Edge Rules:
-- Edges connect nodes. The 'source' and 'target' fields must match node 'id's.
-- For 'conditionNode', you must create two edges originating from it. One must have 'sourceHandle': 'true' and the other 'sourceHandle': 'false'.
-- For 'messageNode' or 'inlineKeyboardNode' with buttons, each button must have a corresponding outgoing edge. The edge's 'sourceHandle' must match the button's 'id'.
-- All nodes except branching ones (message, condition, inlineKeyboard) should have one or zero outgoing edges with no 'sourceHandle'.
-- All edges should have 'animated': true.
+Правила для ребер:
+- Ребра соединяют узлы. Поля 'source' и 'target' должны соответствовать 'id' узлов.
+- Для 'conditionNode' вы должны создать два исходящих ребра. Одно должно иметь 'sourceHandle': 'true', а другое 'sourceHandle': 'false'.
+- Для 'messageNode' или 'inlineKeyboardNode' с кнопками каждая кнопка должна иметь соответствующее исходящее ребро. 'sourceHandle' ребра должен совпадать с 'id' кнопки.
+- Все узлы, кроме ветвящихся (message, condition, inlineKeyboard), должны иметь одно или ноль исходящих ребер без 'sourceHandle'.
+- Все ребра должны иметь 'animated': true.
 
-Layout Rules:
-- The first node ('startNode') should be at position { x: 350, y: 50 }.
-- Subsequent nodes should be positioned below the previous one, increasing the y-coordinate. Keep the x-coordinate the same for a simple vertical flow.
-- For condition or button branches, place the nodes for each path in separate columns. For example, left column at x: 100, middle at x: 350, right at x: 600.
+Правила макета:
+- Первый узел ('startNode') должен находиться в позиции { x: 350, y: 50 }.
+- Последующие узлы должны располагаться ниже предыдущего, увеличивая координату y. Сохраняйте ту же координату x для простого вертикального потока.
+- Для ветвлений условий или кнопок размещайте узлы для каждого пути в отдельных столбцах. Например, левый столбец при x: 100, средний при x: 350, правый при x: 600.
 
-Your output MUST be ONLY the JSON object, perfectly matching the schema. Do not include any other text, markdown, or explanations.`;
+Ваш вывод ДОЛЖЕН быть ТОЛЬКО JSON-объектом, идеально соответствующим схеме. Не включайте никакой другой текст, markdown или объяснения.`;
 }
 
 const generateWithGemini = async (prompt: string): Promise<FlowData> => {
@@ -123,7 +123,7 @@ const generateWithGemini = async (prompt: string): Promise<FlowData> => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Generate a bot flow for this user request: "${prompt}"`,
+      contents: `Сгенерируй схему бота для этого запроса пользователя: "${prompt}"`,
       config: {
         systemInstruction: getSystemInstruction(),
         responseMimeType: 'application/json',
@@ -143,7 +143,7 @@ const generateWithGemini = async (prompt: string): Promise<FlowData> => {
 
   } catch (error) {
     console.error('Error calling Gemini API:', error);
-    throw new Error('Failed to generate bot flow from AI. Please check your prompt or try again later.');
+    throw new Error('Не удалось сгенерировать схему бота с помощью ИИ. Пожалуйста, проверьте ваш запрос или попробуйте позже.');
   }
 };
 
@@ -154,11 +154,11 @@ const generateWithOpenAIMock = async (prompt: string): Promise<FlowData> => {
     // Return a hardcoded but different flow for demonstration purposes
     return {
         nodes: [
-            { id: '1', type: 'startNode', position: { x: 350, y: 50 }, data: { label: 'Start' } },
-            { id: '2', type: 'inputNode', position: { x: 350, y: 200 }, data: { question: 'Hello! Do you need help with our service? (Please answer yes/no)', variableName: 'needs_help' } },
-            { id: '3', type: 'conditionNode', position: { x: 350, y: 350 }, data: { variable: 'needs_help', value: 'yes' } },
-            { id: '4', type: 'messageNode', position: { x: 100, y: 500 }, data: { text: 'No problem! Please email our support team at help@telebot.com and we will get back to you shortly.' } },
-            { id: '5', type: 'messageNode', position: { x: 600, y: 500 }, data: { text: 'Great! Have a wonderful day and feel free to reach out if you change your mind.' } },
+            { id: '1', type: 'startNode', position: { x: 350, y: 50 }, data: { label: 'Старт' } },
+            { id: '2', type: 'inputNode', position: { x: 350, y: 200 }, data: { question: 'Здравствуйте! Вам нужна помощь с нашим сервисом? (Ответьте да/нет)', variableName: 'needs_help' } },
+            { id: '3', type: 'conditionNode', position: { x: 350, y: 350 }, data: { variable: 'needs_help', value: 'да' } },
+            { id: '4', type: 'messageNode', position: { x: 100, y: 500 }, data: { text: 'Без проблем! Пожалуйста, напишите нашей команде поддержки на help@telebot.com, и мы скоро свяжемся с вами.' } },
+            { id: '5', type: 'messageNode', position: { x: 600, y: 500 }, data: { text: 'Отлично! Хорошего дня и не стесняйтесь обращаться, если передумаете.' } },
         ],
         edges: [
             { id: 'e1-2', source: '1', target: '2', animated: true },
@@ -223,24 +223,24 @@ const suggestionSchema = {
     }
 };
 
-const getSuggestionSystemInstruction = () => `You are an expert Telegram bot flow designer acting as an intelligent assistant. The user is building a flow and needs suggestions for the next logical node.
-- Analyze the provided source node from which the user is creating a new connection.
-- Based on the source node's type and data, predict what the user likely wants to do next.
-- Return a JSON array of 1 to 3 suggestions. Each suggestion must be an object containing:
-  1. "type": The suggested node type (e.g., 'messageNode', 'inputNode', 'conditionNode', 'imageNode', 'delayNode', 'buttonInputNode').
-  2. "data": The suggested initial data for the new node. Make it context-aware. For example, if the source node saved a variable 'name', a suggested messageNode could have the text "Nice to meet you, {name}!".
-  3. "suggestionText": A brief, user-friendly description of the action, e.g., "Send a welcome message" or "Ask for their email".
+const getSuggestionSystemInstruction = () => `Вы — эксперт по проектированию сценариев для Telegram-ботов, выступающий в роли интеллектуального помощника. Пользователь строит схему и нуждается в предложениях для следующего логического узла.
+- Проанализируйте предоставленный исходный узел, от которого пользователь создает новое соединение.
+- На основе типа и данных исходного узла предскажите, что пользователь, скорее всего, захочет сделать дальше.
+- Верните JSON-массив из 1-3 предложений. Каждое предложение должно быть объектом, содержащим:
+  1. "type": Предлагаемый тип узла (например, 'messageNode', 'inputNode', 'conditionNode', 'imageNode', 'delayNode', 'buttonInputNode').
+  2. "data": Предлагаемые начальные данные для нового узла, учитывающие контекст. Например, если исходный узел сохранил переменную 'name', предлагаемый 'messageNode' может иметь текст "Приятно познакомиться, {name}!".
+  3. "suggestionText": Краткое, понятное пользователю описание действия, например, "Отправить приветственное сообщение" или "Запросить email".
 
-Example Scenarios:
-- If the source node is an 'inputNode' asking for a 'name', you might suggest a 'messageNode' that uses the '{name}' variable.
-- If the source node is a 'messageNode' that ends in a question but has no buttons, you might suggest a 'buttonInputNode' with 'Yes'/'No' buttons.
-- If the source node is an 'inputNode', you might suggest a 'conditionNode' to check the input or a 'delayNode' to make it feel more human.
-- After a welcome message, you might suggest sending an 'imageNode' with a product photo.
+Примеры сценариев:
+- Если исходный узел — 'inputNode', запрашивающий 'name', вы можете предложить 'messageNode', который использует переменную '{name}'.
+- Если исходный узел — 'messageNode', который заканчивается вопросом, но не имеет кнопок, вы можете предложить 'buttonInputNode' с кнопками 'Да'/'Нет'.
+- Если исходный узел — 'inputNode', вы можете предложить 'conditionNode' для проверки ввода или 'delayNode', чтобы сделать общение более человечным.
+- После приветственного сообщения вы можете предложить отправить 'imageNode' с фотографией продукта.
 
-Your output MUST be ONLY the JSON array. Do not include any other text, markdown, or explanations.`;
+Ваш вывод ДОЛЖЕН быть ТОЛЬКО JSON-массивом. Не включайте никакой другой текст, markdown или объяснения.`;
 
 export const getNodeSuggestions = async (sourceNode: Node, allNodes: Node[], allEdges: Edge[]): Promise<NodeSuggestion[]> => {
-    const prompt = `The user is connecting from this node: ${JSON.stringify(sourceNode)}. Suggest the next logical node(s). The full flow context is: nodes=${JSON.stringify(allNodes)}, edges=${JSON.stringify(allEdges)}`;
+    const prompt = `Пользователь соединяет от этого узла: ${JSON.stringify(sourceNode)}. Предложите следующий логический узел(ы). Полный контекст схемы: узлы=${JSON.stringify(allNodes)}, ребра=${JSON.stringify(allEdges)}`;
     
     try {
         const response = await ai.models.generateContent({
@@ -262,8 +262,8 @@ export const getNodeSuggestions = async (sourceNode: Node, allNodes: Node[], all
         return [
             {
                 type: 'messageNode',
-                data: { text: 'New message' },
-                suggestionText: 'Add a message'
+                data: { text: 'Новое сообщение' },
+                suggestionText: 'Добавить сообщение'
             }
         ];
     }

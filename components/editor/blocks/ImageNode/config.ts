@@ -11,7 +11,7 @@ const z = {
 
 export const imageBlockConfig: BlockConfig = {
   type: 'imageNode',
-  name: 'Image',
+  name: 'Изображение',
   icon: ImageIcon,
   color: 'bg-brand-rose',
   component: ImageNode,

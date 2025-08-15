@@ -60,13 +60,13 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="text-center py-20 px-6 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl flex flex-col items-center animate-scaleIn">
         <Logo className="w-24 h-24 text-brand-emerald mb-6" />
-        <h2 className="text-3xl font-bold mb-3">Create your first bot!</h2>
-        <p className="text-text-secondary mb-8 max-w-sm">It looks like you don't have any bots yet. Let's create one to get started.</p>
+        <h2 className="text-3xl font-bold mb-3">Создайте своего первого бота!</h2>
+        <p className="text-text-secondary mb-8 max-w-sm">Похоже, у вас еще нет ботов. Давайте создадим одного, чтобы начать.</p>
          <button
             onClick={() => setIsModalOpen(true)}
             className="group relative px-8 py-3 font-bold text-lg text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-2xl hover:shadow-2xl hover:shadow-brand-emerald/30 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
           >
-            + Create New Bot
+            + Создать нового бота
           </button>
       </div>
     );
@@ -75,12 +75,12 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">My Bots</h1>
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Мои боты</h1>
         <button
           onClick={() => setIsModalOpen(true)}
           className="group relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden"
         >
-          + Create New Bot
+          + Создать нового бота
         </button>
       </div>
 
@@ -92,9 +92,10 @@ const DashboardPage: React.FC = () => {
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleDeleteBot}
-        title="Delete Bot"
-        message={`Are you sure you want to delete "${botToDelete?.name}"? This action cannot be undone.`}
-        confirmText="Delete"
+        title="Удалить бота"
+        message={`Вы уверены, что хотите удалить "${botToDelete?.name}"? Это действие нельзя будет отменить.`}
+        confirmText="Удалить"
+        cancelText="Отмена"
       />
     </div>
   );

@@ -31,7 +31,7 @@ const InlineKeyboardSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
     };
 
     const handleAddButton = () => {
-        const newButtons = [...buttons, { id: `btn_${+new Date()}`, text: 'New Button' }];
+        const newButtons = [...buttons, { id: `btn_${+new Date()}`, text: 'Новая кнопка' }];
         setButtons(newButtons);
         updateNodeData(nodeId, { buttons: newButtons });
     };
@@ -52,7 +52,7 @@ const InlineKeyboardSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
     return (
         <div className="space-y-6">
-            <SettingRow label="Message Text">
+            <SettingRow label="Текст сообщения">
                 <textarea
                   value={text}
                   onChange={handleTextChange}
@@ -61,7 +61,7 @@ const InlineKeyboardSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
                 />
             </SettingRow>
             <hr className="border-input" />
-            <SettingRow label="Buttons" helpText="Each button creates a new output path from the node.">
+            <SettingRow label="Кнопки" helpText="Каждая кнопка создает новый путь вывода из блока.">
                  <div className="space-y-3">
                     {buttons.map((button) => (
                         <div key={button.id} className="flex items-center gap-2">
@@ -71,13 +71,13 @@ const InlineKeyboardSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
                                 onChange={(e) => handleButtonTextChange(button.id, e.target.value)}
                                 className="w-full px-3 py-2 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
                             />
-                            <button onClick={() => handleRemoveButton(button.id)} className="p-2 text-text-secondary hover:text-brand-red rounded-full hover:bg-surface transition-colors flex-shrink-0" aria-label="Remove button">
+                            <button onClick={() => handleRemoveButton(button.id)} className="p-2 text-text-secondary hover:text-brand-red rounded-full hover:bg-surface transition-colors flex-shrink-0" aria-label="Удалить кнопку">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                             </button>
                         </div>
                     ))}
                     <button onClick={handleAddButton} className="w-full text-sm font-medium text-brand-green p-2 rounded-lg hover:bg-input transition-colors">
-                        + Add Button
+                        + Добавить кнопку
                     </button>
                 </div>
             </SettingRow>

@@ -11,7 +11,7 @@ const z = {
 
 export const delayBlockConfig: BlockConfig = {
   type: 'delayNode',
-  name: 'Delay',
+  name: 'Задержка',
   icon: DelayIcon,
   color: 'bg-slate-500',
   component: DelayNode,

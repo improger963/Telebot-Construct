@@ -11,12 +11,12 @@ const z = {
 
 export const conditionBlockConfig: BlockConfig = {
   type: 'conditionNode',
-  name: 'Condition',
+  name: 'Условие',
   icon: ConditionIcon,
   color: 'bg-brand-amber',
   component: ConditionNode,
   settingsComponent: ConditionSettings,
-  initialData: { variable: 'userInput', value: 'yes' },
+  initialData: { variable: 'userInput', value: 'да' },
   validationSchema: z.object({
     variable: z.string().min(1, 'Variable name cannot be empty'),
     value: z.string().min(1, 'Value cannot be empty'),

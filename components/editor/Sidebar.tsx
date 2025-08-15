@@ -31,10 +31,10 @@ const BlocksPanel: React.FC = () => {
 
     return (
         <div>
-            <h3 className="text-xl font-bold mb-2 text-text-primary">Blocks</h3>
-            <p className="text-xs text-text-secondary mb-6">Drag blocks onto the canvas to build your bot.</p>
+            <h3 className="text-xl font-bold mb-2 text-text-primary">Блоки</h3>
+            <p className="text-xs text-text-secondary mb-6">Перетаскивайте блоки на холст, чтобы построить своего бота.</p>
             
-            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3">Bot Actions</h4>
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3">Действия бота</h4>
             {botActionBlocks.map(config => (
                 <NodeItem 
                     key={config.type}
@@ -46,7 +46,7 @@ const BlocksPanel: React.FC = () => {
                 />
             ))}
 
-            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">User Input &amp; Logic</h4>
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">Ввод и логика</h4>
              {userInputLogicBlocks.map(config => (
                 <NodeItem 
                     key={config.type}
@@ -70,10 +70,10 @@ const Sidebar: React.FC = () => {
       <div className="p-2 flex-shrink-0">
           <div className="bg-input p-1 rounded-lg flex gap-1">
               <button onClick={() => setActiveTab('blocks')} className={`w-1/2 py-2 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${activeTab === 'blocks' ? 'bg-surface text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}>
-                  Blocks
+                  Блоки
               </button>
               <button onClick={() => setActiveTab('variables')} className={`w-1/2 py-2 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${activeTab === 'variables' ? 'bg-surface text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}>
-                  <VariableIcon className="w-5 h-5" /> Variables
+                  <VariableIcon className="w-5 h-5" /> Переменные
               </button>
           </div>
       </div>

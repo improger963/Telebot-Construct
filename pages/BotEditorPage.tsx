@@ -35,7 +35,7 @@ const BotEditorPageInternal: React.FC = () => {
     duplicateSelectedNode,
   } = useFlowStore();
 
-  const [botName, setBotName] = useState<string>('Loading...');
+  const [botName, setBotName] = useState<string>('Загрузка...');
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ const BotEditorPageInternal: React.FC = () => {
           setBotName(botData.name);
         } catch (error) {
           console.error("Failed to load bot data", error);
-          setBotName('Unknown Bot');
+          setBotName('Неизвестный бот');
         }
       };
       loadFlow();
@@ -234,8 +234,8 @@ const BotEditorPageInternal: React.FC = () => {
     <div className="h-[calc(100vh-80px)] w-full flex flex-col bg-background overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
        <div className="flex justify-between items-center p-4 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800 flex-shrink-0 z-10">
             <div className="flex items-center gap-4">
-                 <Link to="/dashboard" className="text-text-secondary hover:text-text-primary transition-colors">&larr; Back to Dashboard</Link>
-                <h1 className="text-xl font-bold text-text-primary">Editing: <span className="text-brand-emerald">{botName}</span></h1>
+                 <Link to="/dashboard" className="text-text-secondary hover:text-text-primary transition-colors">&larr; Назад к панели</Link>
+                <h1 className="text-xl font-bold text-text-primary">Редактирование: <span className="text-brand-emerald">{botName}</span></h1>
             </div>
             <div className="flex items-center gap-4">
                 <button
@@ -243,7 +243,7 @@ const BotEditorPageInternal: React.FC = () => {
                     className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   <PlayIcon className="h-5 w-5" />
-                  Test Bot
+                  Тестировать бота
                 </button>
                 <button
                     onClick={handleSave}
@@ -253,12 +253,12 @@ const BotEditorPageInternal: React.FC = () => {
                   {showSuccess ? (
                     <>
                       <CheckIcon className="h-5 w-5" />
-                      Saved!
+                      Сохранено!
                     </>
                   ) : isSaving ? (
-                    'Saving...'
+                    'Сохранение...'
                   ) : (
-                    'Save Flow'
+                    'Сохранить схему'
                   )}
                 </button>
             </div>

@@ -57,7 +57,7 @@ export class FlowRunner {
     if (startNode) {
       this.processNode(startNode.id);
     } else {
-      this.reportError('Flow must have a Start node.');
+      this.reportError('Схема должна содержать стартовый блок.');
     }
   }
 
@@ -105,7 +105,7 @@ export class FlowRunner {
     } else {
         // It's a MessageNode or InlineKeyboardNode (branching)
         if (!this.currentNodeId) {
-            this.reportError("Button pressed but no active node context.");
+            this.reportError("Кнопка нажата, но нет активного контекста блока.");
             return;
         }
         this.onStateChange({ status: 'running', availableButtons: undefined });
@@ -125,7 +125,7 @@ export class FlowRunner {
 
     const node = this.nodes.find(n => n.id === nodeId);
     if (!node) {
-      this.reportError(`Node with ID ${nodeId} not found.`);
+      this.reportError(`Блок с ID ${nodeId} не найден.`);
       return;
     }
 
@@ -157,7 +157,7 @@ export class FlowRunner {
                 this.handleImageNode(node);
                 break;
             default:
-                this.reportError(`Unknown node type: ${node.type}`);
+                this.reportError(`Неизвестный тип блока: ${node.type}`);
         }
     }, 500);
   }
@@ -219,7 +219,7 @@ export class FlowRunner {
 
   private handleImageNode(node: Node) {
     const caption = this.substituteVariables(node.data.caption);
-    this.addMessage(caption || '[Image]', 'bot', node.data.url);
+    this.addMessage(caption || '[Изображение]', 'bot', node.data.url);
     const nextNode = this.findNextNode(node.id);
     if (nextNode) {
         this.processNode(nextNode.id);
@@ -277,13 +277,13 @@ export class FlowRunner {
   }
 
   private finishFlow() {
-    this.addMessage('The flow has ended.', 'bot');
+    this.addMessage('Сценарий завершен.', 'bot');
     this.onStateChange({ status: 'finished' });
     this.setActiveNodeId(null);
   }
   
   private reportError(message: string) {
-    this.addMessage(`Error: ${message}`, 'bot');
+    this.addMessage(`Ошибка: ${message}`, 'bot');
     this.onStateChange({ status: 'error' });
     this.setActiveNodeId(null);
   }

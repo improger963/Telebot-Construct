@@ -59,14 +59,14 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ id, top, left, type, onClose 
   }, [left, top, screenToFlowPosition, addNode, onClose]);
 
   const nodeMenuItems = useMemo(() => [
-    { label: 'Duplicate', action: handleDuplicate },
-    { label: 'Delete', action: handleDelete, className: 'text-brand-red' },
+    { label: 'Дублировать', action: handleDuplicate },
+    { label: 'Удалить', action: handleDelete, className: 'text-brand-red' },
   ], [handleDuplicate, handleDelete]);
 
   const paneMenuItems = useMemo(() => [
-    { label: 'Add Message Node', action: () => handleAddNode('messageNode') },
-    { label: 'Add Text Input', action: () => handleAddNode('inputNode') },
-    { label: 'Add Condition', action: () => handleAddNode('conditionNode') },
+    { label: 'Добавить блок Сообщение', action: () => handleAddNode('messageNode') },
+    { label: 'Добавить Текстовый ввод', action: () => handleAddNode('inputNode') },
+    { label: 'Добавить Условие', action: () => handleAddNode('conditionNode') },
   ], [handleAddNode]);
 
 
@@ -86,7 +86,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ id, top, left, type, onClose 
         ))}
          {type === 'pane' && (
             <div>
-                <p className="px-3 py-1 text-xs font-semibold text-text-secondary">Add Node</p>
+                <p className="px-3 py-1 text-xs font-semibold text-text-secondary">Добавить блок</p>
                 {paneMenuItems.map(item => (
                 <button
                     key={item.label}

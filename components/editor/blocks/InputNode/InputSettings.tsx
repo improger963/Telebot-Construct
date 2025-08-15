@@ -34,7 +34,7 @@ const InputSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
     return (
         <div className="space-y-6">
-        <SettingRow label="Question to Ask">
+        <SettingRow label="Текст вопроса">
             <textarea
                 value={question}
                 onChange={handleQuestionChange}
@@ -42,12 +42,12 @@ const InputSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
                 className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
             />
         </SettingRow>
-        <SettingRow label="Save Answer to Variable" helpText="The user's reply will be stored in this variable.">
+        <SettingRow label="Сохранить ответ в переменную" helpText="Ответ пользователя будет сохранен в эту переменную.">
              <input
                 type="text"
                 value={variableName}
                 onChange={handleVariableChange}
-                placeholder="e.g., userName"
+                placeholder="напр. userName"
                 className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
             />
         </SettingRow>

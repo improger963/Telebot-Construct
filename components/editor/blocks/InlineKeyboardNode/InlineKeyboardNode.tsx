@@ -19,12 +19,12 @@ const InlineKeyboardNode: React.FC<NodeProps> = ({ data, id }) => {
             <InlineKeyboardIcon className="h-5 w-5 text-brand-cyan" />
           </div>
           <div className="text-md font-bold text-text-primary">
-            Inline Keyboard
+            Инлайн-клавиатура
           </div>
         </div>
         
         <div className="text-sm text-text-secondary max-w-xs break-words whitespace-pre-wrap pl-11 pb-3">
-          {data.text || <span className="italic">Enter message text...</span>}
+          {data.text || <span className="italic">Введите текст сообщения...</span>}
         </div>
       </div>
       
@@ -35,7 +35,7 @@ const InlineKeyboardNode: React.FC<NodeProps> = ({ data, id }) => {
                 return (
                     <div key={button.id}>
                         <div className="absolute top-0 transform -translate-x-1/2" style={{ left: `${handlePosition}%` }}>
-                            <p className="text-xs text-center text-text-secondary px-1 truncate max-w-[80px]" title={button.text}>{button.text || `Button ${index + 1}`}</p>
+                            <p className="text-xs text-center text-text-secondary px-1 truncate max-w-[80px]" title={button.text}>{button.text || `Кнопка ${index + 1}`}</p>
                         </div>
                         <Handle
                             type="source"

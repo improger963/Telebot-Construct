@@ -17,7 +17,7 @@ const ImageNode: React.FC<NodeProps> = ({ data, id }) => {
           <ImageIcon className="h-5 w-5 text-brand-rose" />
         </div>
         <div className="text-md font-bold text-text-primary">
-          Send Image
+          Отправить изображение
         </div>
       </div>
       
@@ -26,7 +26,7 @@ const ImageNode: React.FC<NodeProps> = ({ data, id }) => {
             <img src={data.url} alt="Bot media" className="mt-2 rounded-lg max-h-40 w-full object-contain" />
         ) : (
             <div className="mt-2 rounded-lg h-24 w-full bg-input flex items-center justify-center text-text-secondary text-sm">
-                No Image Set
+                Изображение не задано
             </div>
         )}
         {data.caption && (

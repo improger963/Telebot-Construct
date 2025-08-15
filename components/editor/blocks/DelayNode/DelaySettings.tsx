@@ -23,7 +23,7 @@ const DelaySettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
     return (
         <div className="space-y-6">
-          <SettingRow label="Delay Duration" helpText="The flow will pause for this many seconds before continuing.">
+          <SettingRow label="Длительность задержки" helpText="Сценарий приостановится на это количество секунд перед продолжением.">
                <div className="flex items-center gap-2">
                  <input
                     type="number"
@@ -33,7 +33,7 @@ const DelaySettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
                     step="0.1"
                     className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
                 />
-                <span className="text-text-secondary">seconds</span>
+                <span className="text-text-secondary">секунд</span>
                </div>
           </SettingRow>
         </div>

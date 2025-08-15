@@ -17,23 +17,23 @@ const ButtonInputNode: React.FC<NodeProps> = ({ data, id }) => {
           <ButtonInputIcon className="h-5 w-5 text-brand-teal" />
         </div>
         <div className="text-md font-bold text-text-primary">
-          Button Input
+          Ввод кнопкой
         </div>
       </div>
 
       <div className="text-sm text-text-secondary max-w-xs break-words whitespace-pre-wrap p-1">
-        {data.question || <span className="italic">Enter question for user...</span>}
+        {data.question || <span className="italic">Введите вопрос для пользователя...</span>}
       </div>
       
       {data.variableName && (
         <div className="text-xs text-text-secondary mt-3 pt-3 border-t border-slate-700">
-            Save choice to: <span className="font-mono bg-input p-1 rounded text-brand-teal">{`{${data.variableName}}`}</span>
+            Сохранить выбор в: <span className="font-mono bg-input p-1 rounded text-brand-teal">{`{${data.variableName}}`}</span>
         </div>
       )}
 
       {data.buttons && data.buttons.length > 0 && (
         <div className="mt-3 pt-3 border-t border-slate-700 text-xs text-text-secondary space-y-1">
-            <p className="font-semibold">Options:</p>
+            <p className="font-semibold">Варианты:</p>
             <div className="flex flex-wrap gap-1">
                 {data.buttons.map((btn: {id: string, text: string}) => (
                     <span key={btn.id} className="bg-input px-2 py-1 rounded">{btn.text}</span>

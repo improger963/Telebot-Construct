@@ -69,16 +69,16 @@ const VariablesPanel: React.FC = () => {
     return (
         <div className="text-center space-y-4 pt-10">
             <VariableIcon className="w-12 h-12 mx-auto text-text-secondary opacity-50" />
-            <h4 className="font-bold text-text-primary">No Variables Found</h4>
-            <p className="text-text-secondary text-sm">Create variables using the "User Input" block to store and reuse user data in your flow.</p>
+            <h4 className="font-bold text-text-primary">Переменные не найдены</h4>
+            <p className="text-text-secondary text-sm">Создавайте переменные с помощью блока "Ввод пользователя", чтобы хранить и повторно использовать данные пользователя в вашей схеме.</p>
         </div>
     );
   }
 
   return (
     <div>
-        <h3 className="text-xl font-bold mb-2 text-text-primary">Variables</h3>
-        <p className="text-xs text-text-secondary mb-6">Here are all the variables detected in your flow.</p>
+        <h3 className="text-xl font-bold mb-2 text-text-primary">Переменные</h3>
+        <p className="text-xs text-text-secondary mb-6">Здесь находятся все переменные, обнаруженные в вашей схеме.</p>
 
         <div className="space-y-4">
             {variables.map(v => {
@@ -89,26 +89,26 @@ const VariablesPanel: React.FC = () => {
                     <div key={v.name} className="bg-input p-4 rounded-lg">
                         <div className="flex justify-between items-center mb-3">
                             <p className="font-mono bg-background px-2 py-1 rounded text-brand-purple text-lg">{`{${v.name}}`}</p>
-                            {isUndefined && <span className="text-xs font-semibold bg-brand-red text-white px-2 py-1 rounded-full" title="This variable is used but never defined in an Input node.">Undefined</span>}
-                            {isUnused && <span className="text-xs font-semibold bg-brand-orange text-white px-2 py-1 rounded-full" title="This variable is defined but never used.">Unused</span>}
+                            {isUndefined && <span className="text-xs font-semibold bg-brand-red text-white px-2 py-1 rounded-full" title="Эта переменная используется, но нигде не определяется в блоке Ввода.">Неопределена</span>}
+                            {isUnused && <span className="text-xs font-semibold bg-brand-orange text-white px-2 py-1 rounded-full" title="Эта переменная определена, но нигде не используется.">Не используется</span>}
                         </div>
 
                         <div className="text-sm space-y-2">
                            <div className="text-text-secondary">
-                                <span className="font-semibold">Defined in:</span>
+                                <span className="font-semibold">Определена в:</span>
                                 {v.definedIn ? (
-                                    <button onClick={() => handleNodeClick(v.definedIn)} className="ml-2 hover:underline text-text-primary">Node ID: ...{v.definedIn.slice(-4)}</button>
-                                ): <span className="ml-2 text-text-secondary italic">Not defined</span>}
+                                    <button onClick={() => handleNodeClick(v.definedIn)} className="ml-2 hover:underline text-text-primary">Блок ID: ...{v.definedIn.slice(-4)}</button>
+                                ): <span className="ml-2 text-text-secondary italic">Не определена</span>}
                            </div>
                            <div className="text-text-secondary">
-                                <span className="font-semibold">Used in:</span>
+                                <span className="font-semibold">Используется в:</span>
                                 {v.usedIn.length > 0 ? (
                                     <div className="flex flex-wrap gap-2 mt-1">
                                     {v.usedIn.map(nodeId => (
                                         <button key={nodeId} onClick={() => handleNodeClick(nodeId)} className="bg-background px-2 py-1 text-xs rounded hover:bg-surface text-text-primary">...{nodeId.slice(-4)}</button>
                                     ))}
                                     </div>
-                                ): <span className="ml-2 text-text-secondary italic">Not used</span>}
+                                ): <span className="ml-2 text-text-secondary italic">Не используется</span>}
                            </div>
                         </div>
                     </div>

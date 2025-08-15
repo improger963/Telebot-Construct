@@ -45,7 +45,7 @@ const ImageSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
     return (
         <div className="space-y-6">
-            <SettingRow label="Image Source" helpText="Enter a public URL or upload an image file.">
+            <SettingRow label="Источник изображения" helpText="Введите публичный URL или загрузите файл изображения.">
                 <input
                     type="text"
                     value={url.startsWith('data:') ? '' : url}
@@ -53,24 +53,24 @@ const ImageSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
                     placeholder="https://example.com/image.png"
                     className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
                 />
-                <div className="text-center my-2 text-text-secondary text-sm">or</div>
+                <div className="text-center my-2 text-text-secondary text-sm">или</div>
                 <label className="w-full text-center block cursor-pointer py-3 px-4 font-semibold text-primary-text bg-primary rounded-lg hover:bg-gray-200 transition-all">
-                    Upload Image
+                    Загрузить изображение
                     <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
                 </label>
                 {url && (
                     <div className="mt-4 p-2 bg-background rounded-lg">
-                        <p className="text-xs text-text-secondary mb-2 text-center">Preview:</p>
+                        <p className="text-xs text-text-secondary mb-2 text-center">Предпросмотр:</p>
                         <img src={url} alt="Preview" className="rounded-md max-w-full max-h-40 mx-auto" />
                     </div>
                 )}
             </SettingRow>
-            <SettingRow label="Optional Caption">
+            <SettingRow label="Необязательная подпись">
                 <textarea
                     value={caption}
                     onChange={handleCaptionChange}
                     rows={3}
-                    placeholder="Describe the image..."
+                    placeholder="Опишите изображение..."
                     className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
                 />
             </SettingRow>

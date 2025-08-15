@@ -12,12 +12,12 @@ const z = {
 
 export const inputBlockConfig: BlockConfig = {
   type: 'inputNode',
-  name: 'Text Input',
+  name: 'Текстовый ввод',
   icon: InputIcon,
   color: 'bg-brand-violet',
   component: InputNode,
   settingsComponent: InputSettings,
-  initialData: { question: 'What is your name?', variableName: 'name' },
+  initialData: { question: 'Как вас зовут?', variableName: 'name' },
   validationSchema: z.object({
     question: z.string().min(1, 'Question cannot be empty'),
     variableName: z.string().min(1, 'Variable name cannot be empty'),

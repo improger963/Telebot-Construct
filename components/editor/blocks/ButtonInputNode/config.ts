@@ -12,17 +12,17 @@ const z = {
 
 export const buttonInputBlockConfig: BlockConfig = {
   type: 'buttonInputNode',
-  name: 'Button Input',
+  name: 'Ввод кнопкой',
   icon: ButtonInputIcon,
   color: 'bg-brand-teal',
   component: ButtonInputNode,
   settingsComponent: ButtonInputSettings,
   initialData: {
-    question: 'Please choose an option:',
+    question: 'Пожалуйста, выберите вариант:',
     variableName: 'user_choice',
     buttons: [
-        { id: `btn_${+new Date()}_1`, text: 'Option 1' },
-        { id: `btn_${+new Date()}_2`, text: 'Option 2' },
+        { id: `btn_${+new Date()}_1`, text: 'Вариант 1' },
+        { id: `btn_${+new Date()}_2`, text: 'Вариант 2' },
     ]
   },
   validationSchema: z.object({

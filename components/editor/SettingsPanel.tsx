@@ -11,8 +11,8 @@ const SettingsPanel: React.FC = () => {
         <aside className="w-96 bg-slate-900/50 backdrop-blur-xl p-6 border-l border-slate-800/50 flex-shrink-0 flex items-center justify-center z-10">
             <div className="text-center space-y-4">
               <InfoIcon className="w-12 h-12 mx-auto text-text-secondary opacity-50" />
-              <h4 className="font-bold text-text-primary">Node Settings</h4>
-              <p className="text-text-secondary text-sm">Select a node on the canvas to view and edit its properties here.</p>
+              <h4 className="font-bold text-text-primary">Настройки блока</h4>
+              <p className="text-text-secondary text-sm">Выберите блок на холсте, чтобы просмотреть и изменить его свойства здесь.</p>
             </div>
         </aside>
     );
@@ -24,8 +24,8 @@ const SettingsPanel: React.FC = () => {
   if (!config) {
     return (
       <aside className="w-96 bg-slate-900/50 backdrop-blur-xl p-6 border-l border-slate-800/50 flex-shrink-0 animate-slideInFromRight z-10">
-        <h3 className="text-xl font-bold mb-6 text-text-primary">Settings</h3>
-        <p className="text-text-secondary">Error: Unknown node type "{selectedNode.type}".</p>
+        <h3 className="text-xl font-bold mb-6 text-text-primary">Настройки</h3>
+        <p className="text-text-secondary">Ошибка: Неизвестный тип блока "{selectedNode.type}".</p>
       </aside>
     );
   }
@@ -34,10 +34,10 @@ const SettingsPanel: React.FC = () => {
 
   return (
     <aside className="w-96 bg-slate-900/50 backdrop-blur-xl p-6 border-l border-slate-800/50 flex-shrink-0 animate-slideInFromRight z-10 overflow-y-auto">
-      <h3 className="text-xl font-bold mb-6 text-text-primary">Settings</h3>
+      <h3 className="text-xl font-bold mb-6 text-text-primary">Настройки</h3>
       <div className="space-y-6">
         <div>
-            <p className="text-sm font-bold text-text-secondary uppercase tracking-wider">Node Type</p>
+            <p className="text-sm font-bold text-text-secondary uppercase tracking-wider">Тип блока</p>
             <p className="text-md font-semibold text-brand-emerald">{config.name}</p>
         </div>
         <hr className="border-accent" />

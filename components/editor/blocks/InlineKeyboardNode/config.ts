@@ -13,14 +13,14 @@ const z = {
 
 export const inlineKeyboardBlockConfig: BlockConfig = {
   type: 'inlineKeyboardNode',
-  name: 'Inline Keyboard',
+  name: 'Инлайн-клавиатура',
   icon: InlineKeyboardIcon,
   color: 'bg-brand-cyan',
   component: InlineKeyboardNode,
   settingsComponent: InlineKeyboardSettings,
   initialData: {
-    text: 'Please make a selection.',
-    buttons: [{ id: `btn_${+new Date()}`, text: 'Learn More' }],
+    text: 'Пожалуйста, сделайте выбор.',
+    buttons: [{ id: `btn_${+new Date()}`, text: 'Подробнее' }],
   },
   validationSchema: z.object({
     text: z.string().min(1, 'Message cannot be empty'),

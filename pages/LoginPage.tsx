@@ -78,7 +78,7 @@ const LoginPage: React.FC = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
+      setError('Не удалось войти. Пожалуйста, проверьте ваши данные.');
     }
   };
 
@@ -90,13 +90,13 @@ const LoginPage: React.FC = () => {
             <Link to="/" aria-label="Back to Home">
               <Logo className="h-20 w-20 mx-auto text-brand-emerald transition-transform hover:scale-110" />
             </Link>
-            <h2 className="text-4xl font-bold text-center text-text-primary bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Welcome Back</h2>
-            <p className="text-text-secondary">Log in to continue to TeleBot Constructor</p>
+            <h2 className="text-4xl font-bold text-center text-text-primary bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">С возвращением!</h2>
+            <p className="text-text-secondary">Войдите, чтобы продолжить в TeleBot Constructor</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && <p className="text-red-500 text-center text-sm">{error}</p>}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">Электронная почта</label>
             <input
               id="email"
               type="email"
@@ -107,7 +107,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-text-secondary mb-2">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-text-secondary mb-2">Пароль</label>
             <input
               id="password"
               type="password"
@@ -121,13 +121,13 @@ const LoginPage: React.FC = () => {
             type="submit"
             className="w-full py-3 px-4 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-[0.98]"
           >
-            Login
+            Войти
           </button>
         </form>
         <p className="text-center text-text-secondary">
-          Don't have an account?{' '}
+          У вас нет аккаунта?{' '}
           <Link to="/register" className="font-medium text-brand-emerald hover:underline">
-            Sign up
+            Зарегистрироваться
           </Link>
         </p>
       </div>

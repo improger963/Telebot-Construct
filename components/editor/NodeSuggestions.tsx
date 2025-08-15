@@ -49,7 +49,7 @@ const NodeSuggestions: React.FC<NodeSuggestionsProps> = ({ sourceNode, position,
     >
         <div className="flex items-center gap-2 text-sm font-semibold text-brand-green mb-3 px-1">
             <MagicIcon className="w-5 h-5"/>
-            <span>AI Suggestions</span>
+            <span>AI-подсказки</span>
         </div>
         
         {isLoading ? (
@@ -77,7 +77,7 @@ const NodeSuggestions: React.FC<NodeSuggestionsProps> = ({ sourceNode, position,
                         </button>
                     )
                 }) : (
-                    <p className="text-sm text-text-secondary p-2">No suggestions available.</p>
+                    <p className="text-sm text-text-secondary p-2">Нет доступных подсказок.</p>
                 )}
             </div>
         )}

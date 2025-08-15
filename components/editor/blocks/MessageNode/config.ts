@@ -11,12 +11,12 @@ const z = {
 
 export const messageBlockConfig: BlockConfig = {
   type: 'messageNode',
-  name: 'Message',
+  name: 'Сообщение',
   icon: MessageIcon,
   color: 'bg-brand-cyan',
   component: MessageNode,
   settingsComponent: MessageSettings,
-  initialData: { text: 'New message', buttons: [] },
+  initialData: { text: 'Новое сообщение', buttons: [] },
   validationSchema: z.object({
     text: z.string().min(1, 'Message cannot be empty'),
   }),

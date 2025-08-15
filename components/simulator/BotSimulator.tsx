@@ -78,13 +78,13 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
             <div className="flex-shrink-0 p-4 bg-input flex justify-between items-center border-b border-slate-700/50">
                 <div>
                     <h3 className="font-bold text-text-primary">{botName}</h3>
-                    <p className="text-xs text-brand-emerald">Online</p>
+                    <p className="text-xs text-brand-emerald">В сети</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button onClick={handleRestart} className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface transition-colors" aria-label="Restart conversation">
+                    <button onClick={handleRestart} className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface transition-colors" aria-label="Перезапустить диалог">
                         <RestartIcon className="w-5 h-5" />
                     </button>
-                    <button onClick={handleClose} className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface transition-colors" aria-label="Close simulator">
+                    <button onClick={handleClose} className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface transition-colors" aria-label="Закрыть симулятор">
                         <CloseIcon className="w-5 h-5" />
                     </button>
                 </div>
@@ -136,7 +136,7 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
                             type="text"
                             value={userInput}
                             onChange={e => setUserInput(e.target.value)}
-                            placeholder={simState.waitingForInput ? "Type your message..." : "Waiting for bot..."}
+                            placeholder={simState.waitingForInput ? "Введите ваше сообщение..." : "Ожидание ответа бота..."}
                             disabled={!simState.waitingForInput}
                             className="w-full px-4 py-3 text-text-primary bg-background rounded-full border-none focus:outline-none focus:ring-2 focus:ring-brand-emerald disabled:opacity-50"
                         />

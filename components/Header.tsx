@@ -23,12 +23,12 @@ const Header: React.FC = () => {
           </span>
         </Link>
         <div className="flex items-center space-x-4">
-          {user && <span className="text-text-secondary hidden sm:block">Welcome, {user.email}</span>}
+          {user && <span className="text-text-secondary hidden sm:block">Добро пожаловать, {user.email}</span>}
           <button
             onClick={handleLogout}
             className="px-5 py-2 font-medium text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            Logout
+            Выйти
           </button>
         </div>
       </nav>

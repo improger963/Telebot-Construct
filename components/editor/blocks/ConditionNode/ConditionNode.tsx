@@ -17,22 +17,22 @@ const ConditionNode: React.FC<NodeProps> = ({ data, id }) => {
             <ConditionIcon className="h-5 w-5 text-brand-amber" />
         </div>
         <div className="text-md font-bold text-text-primary">
-          Condition
+          Условие
         </div>
       </div>
       
       <div className="text-sm text-text-secondary space-y-2 p-1">
-        <span>If</span>
-        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`{${data.variable || 'variable'}}`}</div>
-        <span>contains</span>
-        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`"${data.value || 'value'}"`}</div>
+        <span>Если</span>
+        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`{${data.variable || 'переменная'}}`}</div>
+        <span>содержит</span>
+        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`"${data.value || 'значение'}"`}</div>
       </div>
 
       <Handle id="true" type="source" position={Position.Bottom} style={{ left: '25%' }} className="!bg-brand-green">
-        <div className="absolute top-2.5 transform -translate-x-1/2 left-1/2 px-2 py-0.5 rounded-full text-xs text-white bg-brand-green">True</div>
+        <div className="absolute top-2.5 transform -translate-x-1/2 left-1/2 px-2 py-0.5 rounded-full text-xs text-white bg-brand-green">Да</div>
       </Handle>
       <Handle id="false" type="source" position={Position.Bottom} style={{ left: '75%' }} className="!bg-brand-red">
-         <div className="absolute top-2.5 transform -translate-x-1/2 left-1/2 px-2 py-0.5 rounded-full text-xs text-white bg-brand-red">False</div>
+         <div className="absolute top-2.5 transform -translate-x-1/2 left-1/2 px-2 py-0.5 rounded-full text-xs text-white bg-brand-red">Нет</div>
       </Handle>
     </div>
   );

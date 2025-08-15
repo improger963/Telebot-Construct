@@ -30,7 +30,7 @@ const VisualBuilderIcon: React.FC<{className?: string}> = (props) => (
 
 const AIPoweredIcon: React.FC<{className?: string}> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-violet-400" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846-.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
   </svg>
 );
 
@@ -203,10 +203,10 @@ const LandingPage: React.FC = () => {
                     </Link>
                     <div className="flex items-center space-x-3">
                         <Link to="/login" className="px-6 py-2.5 font-medium text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all duration-300 hover:scale-105">
-                            Login
+                            Войти
                         </Link>
                         <Link to="/register" className="px-6 py-2.5 font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-105 active:scale-95">
-                            Sign Up
+                            Регистрация
                         </Link>
                     </div>
                 </nav>
@@ -230,46 +230,46 @@ const LandingPage: React.FC = () => {
                         <div className="max-w-5xl mx-auto">
                             <h1 className="text-6xl md:text-8xl font-black mb-8 leading-tight">
                                 <span className="bg-gradient-to-r from-white via-emerald-200 to-white bg-clip-text text-transparent animate-pulse">
-                                    Create Powerful
+                                    Создавайте мощных
                                 </span>
                                 <br />
                                 <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
-                                    Telegram Bots
+                                    Telegram-ботов
                                 </span>
                                 <br />
                                 <span className="text-slate-300 text-4xl md:text-6xl font-light">
-                                    Visually.
+                                    Визуально.
                                 </span>
                             </h1>
                             
                             <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto mb-12 leading-relaxed">
-                                Build, test, and deploy complex chat flows with our intuitive drag-and-drop editor.
+                                Стройте, тестируйте и запускайте сложные диалоговые сценарии с помощью нашего интуитивного drag-and-drop редактора.
                                 <br />
-                                <span className="text-emerald-400 font-semibold">Powered by AI</span>, designed for creators. No code required.
+                                <span className="text-emerald-400 font-semibold">На базе ИИ</span>, создано для креаторов. Код не требуется.
                             </p>
                             
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
                                 <Link to="/register" className="group relative px-12 py-4 font-bold text-lg text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden">
-                                    <span className="relative z-10">Get Started for Free</span>
+                                    <span className="relative z-10">Начать бесплатно</span>
                                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </Link>
                                 <a href="#showcase" className="px-12 py-4 font-bold text-lg text-slate-300 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-emerald-500/50 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95 hover:text-white">
-                                    See it in Action
+                                    Посмотреть в действии
                                 </a>
                             </div>
                             
                             <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-slate-400">
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                                    <span>No code required</span>
+                                    <span>Код не требуется</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 bg-violet-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                                    <span>Free to start</span>
+                                    <span>Бесплатный старт</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-                                    <span>AI-powered</span>
+                                    <span>С поддержкой ИИ</span>
                                 </div>
                             </div>
                         </div>
@@ -278,7 +278,7 @@ const LandingPage: React.FC = () => {
 
                 <div className="py-16 relative overflow-hidden bg-slate-900/50">
                     <div className="text-center mb-8">
-                        <p className="text-slate-400 text-sm uppercase tracking-wider">Trusted by innovative teams</p>
+                        <p className="text-slate-400 text-sm uppercase tracking-wider">Нам доверяют инновационные команды</p>
                     </div>
                     <div className="flex whitespace-nowrap">
                         <div className="flex space-x-16 items-center animate-marquee">
@@ -299,15 +299,15 @@ const LandingPage: React.FC = () => {
                         <div className="text-center mb-20">
                             <h2 className="text-5xl md:text-6xl font-bold mb-6">
                                 <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                                    The Future of Bot Building
+                                    Будущее создания ботов
                                 </span>
                                 <br />
                                 <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                                    is Visual
+                                    визуально
                                 </span>
                             </h2>
                             <p className="text-xl text-slate-400 max-w-3xl mx-auto">
-                                Stop wrestling with code. Start designing conversations with our intuitive, powerful editor.
+                                Перестаньте бороться с кодом. Начните проектировать диалоги с нашим интуитивно понятным и мощным редактором.
                             </p>
                         </div>
                         
@@ -347,18 +347,18 @@ const LandingPage: React.FC = () => {
                                         </svg>
                                         
                                         <div className="absolute top-[15%] left-[15%] w-44 h-20 bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border-2 border-emerald-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-emerald-500/20">
-                                            <div className="text-white font-semibold text-sm">🚀 Start</div>
-                                            <div className="text-emerald-200 text-xs">Entry point</div>
+                                            <div className="text-white font-semibold text-sm">🚀 Старт</div>
+                                            <div className="text-emerald-200 text-xs">Точка входа</div>
                                         </div>
                                         
                                         <div className="absolute top-[45%] left-[5%] w-52 h-24 bg-gradient-to-br from-violet-500/30 to-violet-600/20 border-2 border-violet-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-violet-500/20">
-                                            <div className="text-white font-semibold text-sm">💬 Send Message</div>
-                                            <div className="text-violet-200 text-xs">"Welcome to our bot!"</div>
+                                            <div className="text-white font-semibold text-sm">💬 Отправить сообщение</div>
+                                            <div className="text-violet-200 text-xs">"Добро пожаловать в наш бот!"</div>
                                         </div>
                                         
                                         <div className="absolute top-[45%] right-[5%] w-52 h-24 bg-gradient-to-br from-amber-500/30 to-amber-600/20 border-2 border-amber-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-amber-500/20">
-                                            <div className="text-white font-semibold text-sm">❓ Ask Input</div>
-                                            <div className="text-amber-200 text-xs">Get user response</div>
+                                            <div className="text-white font-semibold text-sm">❓ Запросить ввод</div>
+                                            <div className="text-amber-200 text-xs">Получить ответ пользователя</div>
                                         </div>
                                     </div>
                                 </div>
@@ -372,14 +372,14 @@ const LandingPage: React.FC = () => {
                         <div className="text-center mb-20">
                             <h2 className="text-5xl font-bold mb-6">
                                 <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                                    Go From Idea to Live Bot
+                                    От идеи до рабочего бота
                                 </span>
                                 <br />
                                 <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                                    in Minutes
+                                    за минуты
                                 </span>
                             </h2>
-                            <p className="text-xl text-slate-400">A seamless creation process designed for speed.</p>
+                            <p className="text-xl text-slate-400">Простой процесс создания, разработанный для скорости.</p>
                         </div>
                         
                         <div className="relative max-w-4xl mx-auto">
@@ -387,9 +387,9 @@ const LandingPage: React.FC = () => {
                             
                             <div className="relative space-y-24">
                                 {[
-                                    { icon: DescribeIcon, color: 'emerald', title: '1. Describe or Choose', desc: 'Start by explaining your bot\'s logic in plain English, using our AI generator. Or, pick a pre-built template to get started instantly.' },
-                                    { icon: CustomizeIcon, color: 'violet', title: '2. Customize & Build', desc: 'Fine-tune the flow with our powerful visual editor. Drag and drop new blocks, connect them, and configure settings with AI-powered suggestions.' },
-                                    { icon: LaunchIcon, color: 'amber', title: '3. Test & Launch', desc: 'Test your bot end-to-end with the built-in simulator. Once you\'re happy, connect it to Telegram with one click and go live!' }
+                                    { icon: DescribeIcon, color: 'emerald', title: '1. Опишите или выберите', desc: 'Начните, описав логику вашего бота на простом языке с помощью нашего AI-генератора. Или выберите готовый шаблон, чтобы начать мгновенно.' },
+                                    { icon: CustomizeIcon, color: 'violet', title: '2. Настройте и соберите', desc: 'Отладьте сценарий с помощью нашего мощного визуального редактора. Перетаскивайте новые блоки, соединяйте их и настраивайте с помощью AI-подсказок.' },
+                                    { icon: LaunchIcon, color: 'amber', title: '3. Тестируйте и запускайте', desc: 'Протестируйте всего бота во встроенном симуляторе. Когда все будет готово, подключите его к Telegram в один клик и запускайте!' }
                                 ].map((step, i) => (
                                     <div key={i} className="relative flex items-start">
                                         <div className={`w-32 h-32 rounded-3xl bg-gradient-to-br from-${step.color}-500/20 to-${step.color}-600/10 flex-shrink-0 flex items-center justify-center border-4 border-${step.color}-500/30 relative z-10 backdrop-blur-xl shadow-lg shadow-${step.color}-500/20`}>
@@ -411,33 +411,33 @@ const LandingPage: React.FC = () => {
                         <div className="text-center mb-20">
                             <h2 className="text-5xl font-bold mb-6">
                                 <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                                    The Ultimate
+                                    Лучший набор
                                 </span>
                                 <br />
                                 <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                                    No-Code Toolkit
+                                    инструментов No-Code
                                 </span>
                             </h2>
-                            <p className="text-xl text-slate-400">All the best features in one seamless platform.</p>
+                            <p className="text-xl text-slate-400">Все лучшие функции на одной удобной платформе.</p>
                         </div>
                         
                         <div className="grid md:grid-cols-3 gap-8">
                             <FeatureCard delay={200}>
                                 <VisualBuilderIcon />
-                                <h3 className="text-2xl font-bold mb-4 text-white">Visual Flow Builder</h3>
-                                <p className="text-slate-400 leading-relaxed">Design complex bot logic with a simple drag-and-drop interface. Connect blocks to create your flow.</p>
+                                <h3 className="text-2xl font-bold mb-4 text-white">Визуальный конструктор</h3>
+                                <p className="text-slate-400 leading-relaxed">Проектируйте сложную логику бота с помощью простого drag-and-drop интерфейса. Соединяйте блоки, чтобы создать свой сценарий.</p>
                             </FeatureCard>
                             
                             <FeatureCard delay={400}>
                                 <AIPoweredIcon />
-                                <h3 className="text-2xl font-bold mb-4 text-white">AI-Powered Creation</h3>
-                                <p className="text-slate-400 leading-relaxed">Describe your bot in plain English and let our AI generate the entire flow for you in seconds.</p>
+                                <h3 className="text-2xl font-bold mb-4 text-white">Создание с помощью ИИ</h3>
+                                <p className="text-slate-400 leading-relaxed">Опишите своего бота на простом языке, и наш ИИ сгенерирует для вас весь сценарий за считанные секунды.</p>
                             </FeatureCard>
                             
                             <FeatureCard delay={600}>
                                 <RealtimeSimulatorIcon />
-                                <h3 className="text-2xl font-bold mb-4 text-white">Real-time Simulator</h3>
-                                <p className="text-slate-400 leading-relaxed">Test your bot instantly within the editor to ensure it works perfectly before going live.</p>
+                                <h3 className="text-2xl font-bold mb-4 text-white">Симулятор в реальном времени</h3>
+                                <p className="text-slate-400 leading-relaxed">Мгновенно тестируйте своего бота прямо в редакторе, чтобы убедиться, что он работает идеально, прежде чем запускать.</p>
                             </FeatureCard>
                         </div>
                     </div>
@@ -453,24 +453,24 @@ const LandingPage: React.FC = () => {
                     <div className="container relative z-10 mx-auto px-6 lg:px-8">
                         <h2 className="text-6xl md:text-7xl font-black mb-6">
                             <span className="bg-gradient-to-r from-white via-emerald-200 to-white bg-clip-text text-transparent">
-                                Ready to Build
+                                Готовы создать
                             </span>
                             <br />
                             <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                                Your Bot?
+                                своего бота?
                             </span>
                         </h2>
                         <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                            Join thousands of creators and start building amazing Telegram bots in minutes, not hours.
+                            Присоединяйтесь к тысячам создателей и начните создавать потрясающих Telegram-ботов за минуты, а не часы.
                         </p>
                         <Link to="/register" className="group relative px-16 py-5 font-bold text-xl text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-500 hover:scale-110 active:scale-95 overflow-hidden">
-                            <span className="relative z-10">Sign Up for Free</span>
+                            <span className="relative z-10">Зарегистрироваться бесплатно</span>
                             <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform translate-x-full group-hover:translate-x-0"></div>
                         </Link>
                         
                         <div className="mt-8 text-sm text-slate-500">
-                            Start building today • No credit card required
+                            Начните создавать сегодня • Кредитная карта не требуется
                         </div>
                     </div>
                 </section>
@@ -482,7 +482,7 @@ const LandingPage: React.FC = () => {
                         <Logo className="h-6 w-6" />
                         <span className="font-semibold">TeleBot Constructor</span>
                     </div>
-                    <p>&copy; {new Date().getFullYear()} TeleBot Constructor. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} TeleBot Constructor. Все права защищены.</p>
                 </div>
             </footer>
         </div>

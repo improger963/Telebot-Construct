@@ -17,16 +17,16 @@ const InputNode: React.FC<NodeProps> = ({ data, id }) => {
           <InputIcon className="h-5 w-5 text-brand-violet" />
         </div>
         <div className="text-md font-bold text-text-primary">
-          Ask for Input
+          Запросить ввод
         </div>
       </div>
 
       <div className="text-sm text-text-secondary max-w-xs break-words whitespace-pre-wrap p-1">
-        {data.question || <span className="italic">Enter question for user...</span>}
+        {data.question || <span className="italic">Введите вопрос для пользователя...</span>}
       </div>
       {data.variableName && (
         <div className="text-xs text-text-secondary mt-3 pt-3 border-t border-slate-700">
-            Save response to: <span className="font-mono bg-input p-1 rounded text-brand-violet">{`{${data.variableName}}`}</span>
+            Сохранить ответ в: <span className="font-mono bg-input p-1 rounded text-brand-violet">{`{${data.variableName}}`}</span>
         </div>
       )}
 
