@@ -26,7 +26,9 @@ const RegisterPage: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen -m-8 bg-background">
       <div className="w-full max-w-md p-8 space-y-8 bg-surface rounded-2xl shadow-xl animate-scaleIn">
         <div className="text-center space-y-2">
-            <Logo className="h-16 w-16 mx-auto text-brand-green" />
+           <Link to="/" aria-label="Back to Home">
+              <Logo className="h-16 w-16 mx-auto text-brand-green transition-transform hover:scale-110" />
+            </Link>
             <h2 className="text-4xl font-bold text-center text-text-primary">Create Account</h2>
             <p className="text-text-secondary">Get started with your new Telegram bot</p>
         </div>

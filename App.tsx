@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -25,26 +26,25 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
-const AuthRedirect: React.FC = () => {
-    const { isAuthenticated, checkAuth } = useAuthStore();
-    useEffect(() => {
-        checkAuth();
-    }, [checkAuth]);
-
-    return isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />;
-}
-
 const App: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated, checkAuth } = useAuthStore();
+  
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
     <div className="min-h-screen bg-background text-text-primary">
       <ConditionalHeader />
-      <main className="p-4 sm:p-6 lg:p-8 animate-fadeIn" key={location.pathname}>
+      <main className={`${!location.pathname.includes('/editor') ? 'p-4 sm:p-6 lg:p-8' : ''} animate-fadeIn`} key={location.pathname}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/" element={<AuthRedirect />} />
+          {/* Public routes that redirect if logged in */}
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <RegisterPage />} />
 
+          {/* Protected routes */}
           <Route
             path="/dashboard"
             element={
@@ -78,7 +78,7 @@ const AppWrapper: React.FC = () => (
 // Only show header on protected routes
 const ConditionalHeader: React.FC = () => {
   const location = useLocation();
-  const noHeaderPaths = ['/login', '/register'];
+  const noHeaderPaths = ['/', '/login', '/register'];
   if (noHeaderPaths.includes(location.pathname) || location.pathname.includes('/editor')) {
     return null;
   }

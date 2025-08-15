@@ -8,6 +8,7 @@ export type SimulatorState = {
     nodeId: string;
     variableName: string;
   };
+  availableButtons?: Array<{ text: string; handleId: string }>;
 };
 
 type StateChangeCallback = (
@@ -44,6 +45,7 @@ export class FlowRunner {
         messages: [],
         status: 'running',
         waitingForInput: undefined,
+        availableButtons: undefined,
     });
 
     const startNode = this.nodes.find(n => n.type === 'startNode');
@@ -65,8 +67,26 @@ export class FlowRunner {
     this.variables[waitingState.waitingForInput.variableName] = input;
     
     // Continue flow
-    this.onStateChange({ status: 'running', waitingForInput: undefined });
+    this.onStateChange({ status: 'running', waitingForInput: undefined, availableButtons: undefined });
     const nextNode = this.findNextNode(waitingState.waitingForInput.nodeId);
+    if (nextNode) {
+      this.processNode(nextNode.id);
+    } else {
+      this.finishFlow();
+    }
+  }
+
+  public pressButton(handleId: string) {
+    if (!this.currentNodeId) {
+      this.reportError("Button pressed but no active node context.");
+      return;
+    }
+    const buttonText = this.onStateChange(undefined, true).availableButtons?.find(b => b.handleId === handleId)?.text;
+    this.addMessage(buttonText || 'Selected an option', 'user');
+
+    this.onStateChange({ status: 'running', availableButtons: undefined });
+    const nextNode = this.findNextNode(this.currentNodeId, handleId);
+
     if (nextNode) {
       this.processNode(nextNode.id);
     } else {
@@ -117,11 +137,21 @@ export class FlowRunner {
   private handleMessageNode(node: Node) {
     const text = this.substituteVariables(node.data.text);
     this.addMessage(text, 'bot');
-    const nextNode = this.findNextNode(node.id);
-    if (nextNode) {
-      this.processNode(nextNode.id);
+
+    const hasButtons = node.data.buttons && node.data.buttons.length > 0;
+
+    if (hasButtons) {
+      this.onStateChange({
+        status: 'waiting',
+        availableButtons: node.data.buttons.map(b => ({ text: b.text, handleId: b.id })),
+      });
     } else {
-      this.finishFlow();
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) {
+        this.processNode(nextNode.id);
+      } else {
+        this.finishFlow();
+      }
     }
   }
 

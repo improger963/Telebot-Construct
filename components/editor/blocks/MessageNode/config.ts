@@ -16,7 +16,7 @@ export const messageBlockConfig: BlockConfig = {
   color: 'bg-brand-blue',
   component: MessageNode,
   settingsComponent: MessageSettings,
-  initialData: { text: 'New message' },
+  initialData: { text: 'New message', buttons: [] },
   validationSchema: z.object({
     text: z.string().min(1, 'Message cannot be empty'),
   }),

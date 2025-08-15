@@ -30,6 +30,18 @@
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.02); }
       }
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-100%); }
+      }
+      @keyframes spotlight-glow {
+        0% {
+            background-position: 0% 50%;
+        }
+        100% {
+            background-position: 200% 50%;
+        }
+      }
 
 
       /* Animation Classes */
@@ -37,6 +49,7 @@
       .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
       .animate-scaleIn { animation: scaleIn 0.3s ease-out forwards; }
       .animate-slideInFromRight { animation: slideInFromRight 0.4s ease-out forwards; }
+      .animate-marquee { animation: marquee 40s linear infinite; }
       .shimmer-bg {
         animation: shimmer 2s infinite linear;
         background: linear-gradient(to right, #2c2c2e 8%, #3a3a3c 18%, #2c2c2e 33%);
@@ -50,6 +63,28 @@
         background-image: radial-gradient(circle at 1px 1px, rgba(242, 242, 247, 0.05) 1px, transparent 0);
         background-size: 20px 20px;
       }
+
+      /* Spotlight card effect */
+      .spotlight-card {
+        position: relative;
+        overflow: hidden;
+      }
+      .spotlight-card::before {
+        content: '';
+        position: absolute;
+        left: var(--x, 50%);
+        top: var(--y, 50%);
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(52, 199, 89, 0.15), transparent, transparent);
+        opacity: 0;
+        transition: opacity 0.4s ease-out;
+      }
+      .spotlight-card:hover::before {
+        opacity: 1;
+      }
+
 
       /* React Flow Enhancements */
       .react-flow__handle {

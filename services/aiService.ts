@@ -32,6 +32,19 @@ const responseSchema = {
             properties: {
                 label: { type: Type.STRING, description: "For 'startNode'.", nullable: true },
                 text: { type: Type.STRING, description: "For 'messageNode'.", nullable: true },
+                buttons: {
+                    type: Type.ARRAY,
+                    description: "For 'messageNode', a list of quick reply buttons.",
+                    nullable: true,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                          id: { type: Type.STRING, description: "A unique ID for the button, e.g., 'btn_123'." },
+                          text: { type: Type.STRING, description: "The text displayed on the button." }
+                        },
+                        required: ['id', 'text']
+                    }
+                },
                 question: { type: Type.STRING, description: "For 'inputNode'.", nullable: true },
                 variableName: { type: Type.STRING, description: "For 'inputNode'.", nullable: true },
                 variable: { type: Type.STRING, description: "For 'conditionNode'.", nullable: true },
@@ -52,7 +65,7 @@ const responseSchema = {
           source: { type: Type.STRING, description: 'The ID of the source node.' },
           target: { type: Type.STRING, description: 'The ID of the target node.' },
           animated: { type: Type.BOOLEAN, description: 'Whether the edge should be animated.', nullable: true },
-          sourceHandle: { type: Type.STRING, description: "For 'conditionNode', can be 'true' or 'false'.", nullable: true },
+          sourceHandle: { type: Type.STRING, description: "For 'conditionNode' (true/false) or 'messageNode' with buttons (the button id).", nullable: true },
         },
         required: ['id', 'source', 'target'],
       },
@@ -69,8 +82,8 @@ You must logically arrange the nodes on a 2D canvas, ensuring a clean and readab
 Here are the available node types and their required 'data' properties:
 1.  'startNode': The entry point. Always include one.
     - data: { "label": "Start" }
-2.  'messageNode': Sends a message to the user.
-    - data: { "text": "Your message here. You can use variables like {var_name}." }
+2.  'messageNode': Sends a message to the user. It can have quick reply buttons, which create separate output paths.
+    - data: { "text": "Your message here.", "buttons": [{ "id": "btn_123", "text": "Option 1" }] }
 3.  'inputNode': Asks a question and saves the user's answer to a variable.
     - data: { "question": "Your question?", "variableName": "variable_name_without_spaces" }
 4.  'conditionNode': Branches the flow based on whether a variable contains a certain value. It has two outputs: 'true' and 'false'.
@@ -79,12 +92,13 @@ Here are the available node types and their required 'data' properties:
 Edge Rules:
 - Edges connect nodes. The 'source' and 'target' fields must match node 'id's.
 - For 'conditionNode', you must create two edges originating from it. One must have 'sourceHandle': 'true' and the other 'sourceHandle': 'false'.
+- For 'messageNode' with buttons, each button must have a corresponding outgoing edge. The edge's 'sourceHandle' must match the button's 'id'.
 - All edges should have 'animated': true.
 
 Layout Rules:
 - The first node ('startNode') should be at position { x: 350, y: 50 }.
-- Subsequent nodes should be positioned below the previous one, increasing the y-coordinate. Keep the x-coordinate the same for a simple vertical flow, but branch left or right for conditions.
-- For condition branches, place the 'true' path nodes to the left (e.g., x: 100) and the 'false' path nodes to the right (e.g., x: 600) of the main flow.
+- Subsequent nodes should be positioned below the previous one, increasing the y-coordinate. Keep the x-coordinate the same for a simple vertical flow.
+- For condition or button branches, place the nodes for each path in separate columns. For example, left column at x: 100, middle at x: 350, right at x: 600.
 
 Your output MUST be ONLY the JSON object, perfectly matching the schema. Do not include any other text, markdown, or explanations.`;
 }
@@ -162,7 +176,30 @@ const suggestionSchema = {
         type: Type.OBJECT,
         properties: {
             type: { type: Type.STRING, description: "Suggested node type (e.g., 'messageNode')." },
-            data: { type: Type.OBJECT, description: 'Suggested, context-aware initial data for the node.' },
+            data: { 
+                type: Type.OBJECT,
+                description: 'Suggested, context-aware initial data for the new node.',
+                properties: {
+                    text: { type: Type.STRING, nullable: true },
+                    question: { type: Type.STRING, nullable: true },
+                    variableName: { type: Type.STRING, nullable: true },
+                    variable: { type: Type.STRING, nullable: true },
+                    value: { type: Type.STRING, nullable: true },
+                    buttons: {
+                        type: Type.ARRAY,
+                        description: "For 'messageNode', a list of quick reply buttons.",
+                        nullable: true,
+                        items: {
+                            type: Type.OBJECT,
+                            properties: {
+                                id: { type: Type.STRING },
+                                text: { type: Type.STRING }
+                            },
+                            required: ['id', 'text']
+                        }
+                    }
+                }
+            },
             suggestionText: { type: Type.STRING, description: 'A brief, user-friendly description of the action.' },
         },
         required: ['type', 'data', 'suggestionText'],
@@ -179,7 +216,7 @@ const getSuggestionSystemInstruction = () => `You are an expert Telegram bot flo
 
 Example Scenarios:
 - If the source node is an 'inputNode' asking for a 'name', you might suggest a 'messageNode' that uses the '{name}' variable.
-- If the source node is a 'messageNode' that ends in a question, you might suggest an 'inputNode'.
+- If the source node is a 'messageNode' that ends in a question but has no buttons, you might suggest a 'messageNode' with 'Yes'/'No' buttons.
 - If the source node is an 'inputNode', you might suggest a 'conditionNode' to check the input.
 
 Your output MUST be ONLY the JSON array. Do not include any other text, markdown, or explanations.`;

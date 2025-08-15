@@ -9,10 +9,12 @@ const MessageSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
     const node = useMemo(() => nodes.find(n => n.id === nodeId), [nodes, nodeId]);
     
     const [text, setText] = useState(node?.data.text || '');
+    const [buttons, setButtons] = useState(node?.data.buttons || []);
 
     useEffect(() => {
         if (node) {
             setText(node.data.text || '');
+            setButtons(node.data.buttons || []);
         }
     }, [node]);
 
@@ -21,18 +23,59 @@ const MessageSettings: React.FC<{ nodeId: string }> = ({ nodeId }) => {
         setText(newText);
         updateNodeData(nodeId, { text: newText });
     };
+
+    const handleAddButton = () => {
+        const newButtons = [...buttons, { id: `btn_${+new Date()}`, text: 'New Button' }];
+        setButtons(newButtons);
+        updateNodeData(nodeId, { buttons: newButtons });
+    };
+
+    const handleButtonTextChange = (id: string, newText: string) => {
+        const newButtons = buttons.map(b => b.id === id ? { ...b, text: newText } : b);
+        setButtons(newButtons);
+        updateNodeData(nodeId, { buttons: newButtons });
+    };
+
+    const handleRemoveButton = (id: string) => {
+        const newButtons = buttons.filter(b => b.id !== id);
+        setButtons(newButtons);
+        updateNodeData(nodeId, { buttons: newButtons });
+    };
     
     if (!node) return null;
 
     return (
-        <SettingRow label="Message Text" helpText="Use {variableName} to insert stored data.">
-            <textarea
-              value={text}
-              onChange={handleTextChange}
-              rows={5}
-              className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
-            />
-        </SettingRow>
+        <div className="space-y-6">
+            <SettingRow label="Message Text" helpText="Use {variableName} to insert stored data.">
+                <textarea
+                  value={text}
+                  onChange={handleTextChange}
+                  rows={5}
+                  className="w-full px-4 py-3 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
+                />
+            </SettingRow>
+             <hr className="border-input" />
+            <SettingRow label="Quick Reply Buttons" helpText="Add buttons to guide the user. Each button creates a new output path.">
+                <div className="space-y-3">
+                    {buttons.map((button) => (
+                        <div key={button.id} className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={button.text}
+                                onChange={(e) => handleButtonTextChange(button.id, e.target.value)}
+                                className="w-full px-3 py-2 text-text-primary bg-input rounded-lg border-none focus:outline-none focus:ring-2 focus:ring-brand-green"
+                            />
+                            <button onClick={() => handleRemoveButton(button.id)} className="p-2 text-text-secondary hover:text-brand-red rounded-full hover:bg-surface transition-colors flex-shrink-0" aria-label="Remove button">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    ))}
+                    <button onClick={handleAddButton} className="w-full text-sm font-medium text-brand-green p-2 rounded-lg hover:bg-input transition-colors">
+                        + Add Button
+                    </button>
+                </div>
+            </SettingRow>
+        </div>
     );
 };
 
