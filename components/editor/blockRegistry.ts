@@ -15,6 +15,10 @@ import { documentBlockConfig } from './blocks/DocumentNode/config';
 import { stickerBlockConfig } from './blocks/StickerNode/config';
 import { httpRequestBlockConfig } from './blocks/HttpRequestNode/config';
 import { databaseBlockConfig } from './blocks/DatabaseNode/config';
+import { locationBlockConfig } from './blocks/LocationNode/config';
+import { pollBlockConfig } from './blocks/PollNode/config';
+import { emailBlockConfig } from './blocks/EmailNode/config';
+import { crmBlockConfig } from './blocks/CrmNode/config';
 
 // A map for quick access by block type, used in SettingsPanel and BotEditorPage
 export const blockRegistry: Record<string, BlockConfig> = {
@@ -34,6 +38,10 @@ export const blockRegistry: Record<string, BlockConfig> = {
   [inlineKeyboardBlockConfig.type]: inlineKeyboardBlockConfig,
   [httpRequestBlockConfig.type]: httpRequestBlockConfig,
   [databaseBlockConfig.type]: databaseBlockConfig,
+  [locationBlockConfig.type]: locationBlockConfig,
+  [pollBlockConfig.type]: pollBlockConfig,
+  [emailBlockConfig.type]: emailBlockConfig,
+  [crmBlockConfig.type]: crmBlockConfig,
 };
 
 // An array for convenient iteration, used in the Sidebar

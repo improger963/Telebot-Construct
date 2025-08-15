@@ -1,7 +1,7 @@
 // This is a mock API client to simulate the backend for development purposes.
 // It uses localStorage to persist data.
 
-import { User, Bot, FlowData } from '../types';
+import { User, Bot, FlowData, StatisticsData, BotStats, OverallStats } from '../types';
 
 const API_DELAY = 300; // ms
 
@@ -178,6 +178,51 @@ const apiClient = {
             db.save();
             resolve();
         }, API_DELAY);
+    });
+  },
+
+  // STATISTICS
+  async getBotsStatistics(): Promise<StatisticsData> {
+    return new Promise((resolve, reject) => {
+      const token = localStorage.getItem('authToken');
+      const user = getUserByToken(token);
+      if (!user) return reject(new Error('Unauthorized'));
+
+      setTimeout(() => {
+        const userBots: Bot[] = db.bots.filter((b: Bot) => b.ownerId === user.id);
+        
+        const botsStats: BotStats[] = userBots.map(bot => {
+            // Generate pseudo-random but stable stats based on bot ID
+            const seed = bot.id.charCodeAt(bot.id.length - 1);
+            const users = (seed * 13) % 1000 + 50;
+            const messages = users * ((seed % 10) + 5);
+            const conversionRate = (seed * 3) % 75 + 10;
+            const messageActivity = Array.from({length: 7}, (_, i) => {
+                return Math.floor(messages / 7 * (Math.sin(seed + i) * 0.2 + 1));
+            });
+            
+            return {
+                id: bot.id,
+                name: bot.name,
+                users,
+                messages,
+                conversionRate,
+                messageActivity,
+            };
+        });
+
+        const overall: OverallStats = {
+            activeBots: userBots.length,
+            totalUsers: botsStats.reduce((sum, b) => sum + b.users, 0),
+            totalMessages: botsStats.reduce((sum, b) => sum + b.messages, 0),
+            avgConversion: botsStats.length > 0
+                ? botsStats.reduce((sum, b) => sum + b.conversionRate, 0) / botsStats.length
+                : 0,
+        };
+
+        resolve({ overall, bots: botsStats });
+
+      }, API_DELAY + 200);
     });
   }
 };

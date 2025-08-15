@@ -8,7 +8,7 @@ export interface User {
 }
 
 export interface Bot {
-  id: string;
+  id:string;
   name: string;
   telegramToken: string;
   ownerId: string;
@@ -64,4 +64,26 @@ export interface NodeSuggestion {
   type: string;
   data: BlockData;
   suggestionText: string;
+}
+
+// For Statistics Page
+export interface BotStats {
+    id: string;
+    name: string;
+    users: number;
+    messages: number;
+    conversionRate: number;
+    messageActivity: number[];
+}
+
+export interface OverallStats {
+    totalUsers: number;
+    totalMessages: number;
+    avgConversion: number;
+    activeBots: number;
+}
+
+export interface StatisticsData {
+    overall: OverallStats;
+    bots: BotStats[];
 }

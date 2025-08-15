@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useBotStore } from '../store/botStore';
 import { useAuthStore } from '../store/authStore';
 import BotCard from '../components/BotCard';
@@ -9,10 +10,12 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import { PlusIcon } from '../components/icons/PlusIcon';
 import { WrenchScrewdriverIcon } from '../components/icons/WrenchScrewdriverIcon';
 import { RocketLaunchIcon } from '../components/icons/RocketLaunchIcon';
+import { ChartBarIcon } from '../components/icons/ChartBarIcon';
 
 const DashboardPage: React.FC = () => {
   const { bots, fetchBots, deleteBot } = useBotStore();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -123,13 +126,22 @@ const DashboardPage: React.FC = () => {
             </p>
         </div>
         { ( !loading && bots.length > 0 ) && 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="group flex-shrink-0 relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center"
-            >
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Создать нового бота
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                  onClick={() => navigate('/dashboard/statistics')}
+                  className="group flex-shrink-0 relative px-6 py-3 font-semibold text-white bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center"
+              >
+                  <ChartBarIcon className="w-5 h-5 mr-2" />
+                  Посмотреть статистику
+              </button>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="group flex-shrink-0 relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center"
+              >
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Создать нового бота
+              </button>
+            </div>
         }
       </div>
 

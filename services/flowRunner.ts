@@ -12,6 +12,11 @@ export type SimulatorState = {
     nodeId: string;
     variableName: string;
   };
+  waitingForLocation?: {
+    nodeId: string;
+    latVariable: string;
+    lonVariable: string;
+  };
   availableButtons?: Array<{ text: string; handleId: string }>;
 };
 
@@ -51,6 +56,7 @@ export class FlowRunner {
         status: 'running',
         waitingForInput: undefined,
         waitingForButtonInput: undefined,
+        waitingForLocation: undefined,
         availableButtons: undefined,
     });
 
@@ -64,17 +70,35 @@ export class FlowRunner {
 
   public async provideUserInput(input: string) {
     const waitingState = this.onStateChange(undefined, true);
-    if (waitingState?.status !== 'waiting' || !waitingState.waitingForInput) return;
+    if (waitingState?.status !== 'waiting') return;
 
     this.addMessage(input, 'user');
-    this.variables[waitingState.waitingForInput.variableName] = input;
-    
-    this.onStateChange({ status: 'running', waitingForInput: undefined, availableButtons: undefined });
-    const nextNode = this.findNextNode(waitingState.waitingForInput.nodeId);
-    if (nextNode) {
-      await this.processNode(nextNode.id);
-    } else {
-      this.finishFlow();
+
+    if (waitingState.waitingForInput) {
+        this.variables[waitingState.waitingForInput.variableName] = input;
+        this.onStateChange({ status: 'running', waitingForInput: undefined, availableButtons: undefined });
+        const nextNode = this.findNextNode(waitingState.waitingForInput.nodeId);
+        if (nextNode) {
+          await this.processNode(nextNode.id);
+        } else {
+          this.finishFlow();
+        }
+    } else if (waitingState.waitingForLocation) {
+        const coords = input.split(',').map(s => s.trim());
+        if (coords.length === 2 && !isNaN(parseFloat(coords[0])) && !isNaN(parseFloat(coords[1]))) {
+            this.variables[waitingState.waitingForLocation.latVariable] = coords[0];
+            this.variables[waitingState.waitingForLocation.lonVariable] = coords[1];
+            
+            this.onStateChange({ status: 'running', waitingForLocation: undefined });
+            const nextNode = this.findNextNode(waitingState.waitingForLocation.nodeId);
+            if (nextNode) {
+              await this.processNode(nextNode.id);
+            } else {
+              this.finishFlow();
+            }
+        } else {
+            this.addMessage('Пожалуйста, введите широту и долготу через запятую (например, 55.75, 37.61)', 'bot');
+        }
     }
   }
 
@@ -116,7 +140,6 @@ export class FlowRunner {
       return;
     }
     
-    // Simulate processing time before executing the node's logic
     await new Promise(resolve => setTimeout(resolve, 500));
     
     switch(node.type) {
@@ -142,6 +165,14 @@ export class FlowRunner {
             await this.handleHttpRequestNode(node); break;
         case 'databaseNode':
             await this.handleDatabaseNode(node); break;
+        case 'locationNode':
+            await this.handleLocationNode(node); break;
+        case 'pollNode':
+            await this.handlePollNode(node); break;
+        case 'emailNode':
+            await this.handleEmailNode(node); break;
+        case 'crmNode':
+            await this.handleCrmNode(node); break;
         default:
             this.reportError(`Неизвестный тип блока: ${node.type}`);
     }
@@ -285,6 +316,43 @@ export class FlowRunner {
     if (nextNode) await this.processNode(nextNode.id);
     else this.finishFlow();
   }
+  
+  private async handleLocationNode(node: Node) {
+    const question = this.substituteVariables(node.data.question);
+    this.addMessage(`${question}\n(Симулятор: введите широту и долготу через запятую, например, 55.75, 37.61)`, 'bot');
+    this.onStateChange({ status: 'waiting', waitingForLocation: { nodeId: node.id, latVariable: node.data.latVariable, lonVariable: node.data.lonVariable } });
+  }
+
+  private async handlePollNode(node: Node) {
+      const question = this.substituteVariables(node.data.question);
+      const options = node.data.options.map(o => `\n- ${o.text}`).join('');
+      this.addMessage(`[ОПРОС]\nВопрос: ${question}${options}`, 'bot');
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) await this.processNode(nextNode.id);
+      else this.finishFlow();
+  }
+  
+  private async handleEmailNode(node: Node) {
+      const to = this.substituteVariables(node.data.to);
+      const subject = this.substituteVariables(node.data.subject);
+      const body = this.substituteVariables(node.data.body);
+      this.addMessage(`[СИМУЛЯЦИЯ EMAIL]\nКому: ${to}\nТема: ${subject}\n---\n${body}`, 'bot');
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) await this.processNode(nextNode.id);
+      else this.finishFlow();
+  }
+  
+  private async handleCrmNode(node: Node) {
+      const { mappings = [] } = node.data;
+      const dataString = mappings
+        .map(m => `${m.crmField}: ${this.substituteVariables(`{${m.variableName}}`)}`)
+        .join(', ');
+      this.addMessage(`[СИМУЛЯЦИЯ CRM]\nОтправлены данные: ${dataString}`, 'bot');
+      const nextNode = this.findNextNode(node.id);
+      if (nextNode) await this.processNode(nextNode.id);
+      else this.finishFlow();
+  }
+
 
   private findNextNode(sourceNodeId: string, sourceHandle?: string) {
     const edge = this.edges.find(e => e.source === sourceNodeId && e.sourceHandle === sourceHandle);

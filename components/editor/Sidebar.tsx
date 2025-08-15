@@ -27,6 +27,7 @@ const BlocksPanel: React.FC = () => {
     const userInputLogicTypes = ['inputNode', 'buttonInputNode', 'conditionNode', 'switchNode'];
     const mediaTypes = ['imageNode', 'videoNode', 'audioNode', 'documentNode', 'stickerNode'];
     const integrationTypes = ['httpRequestNode', 'databaseNode'];
+    const toolTypes = ['locationNode', 'pollNode', 'emailNode', 'crmNode'];
 
     const getBlocks = (types: string[]) => blockConfigs.filter(c => types.includes(c.type));
 
@@ -73,6 +74,18 @@ const BlocksPanel: React.FC = () => {
             
             <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">Интеграции</h4>
              {getBlocks(integrationTypes).map(config => (
+                <NodeItem 
+                    key={config.type}
+                    type={config.type}
+                    label={config.name}
+                    onDragStart={(event) => onDragStart(event, config.type)}
+                    color={config.color}
+                    icon={<config.icon className="h-5 w-5 text-white" />}
+                />
+            ))}
+
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">Инструменты</h4>
+             {getBlocks(toolTypes).map(config => (
                 <NodeItem 
                     key={config.type}
                     type={config.type}

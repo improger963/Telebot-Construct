@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import BotEditorPage from './pages/BotEditorPage';
 import Header from './components/Header';
+import StatisticsPage from './pages/StatisticsPage';
 
 // A component to handle protected routes
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -55,6 +56,14 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard/statistics"
+                element={
+                  <ProtectedRoute>
+                    <StatisticsPage />
                   </ProtectedRoute>
                 }
               />
