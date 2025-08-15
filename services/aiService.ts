@@ -31,10 +31,10 @@ const responseSchema = {
             description: 'Data specific to the node type.',
             properties: {
                 label: { type: Type.STRING, description: "For 'startNode'.", nullable: true },
-                text: { type: Type.STRING, description: "For 'messageNode'.", nullable: true },
+                text: { type: Type.STRING, description: "For 'messageNode' or 'inlineKeyboardNode'.", nullable: true },
                 buttons: {
                     type: Type.ARRAY,
-                    description: "For 'messageNode', a list of quick reply buttons.",
+                    description: "For 'messageNode', 'inlineKeyboardNode', or 'buttonInputNode', a list of quick reply buttons.",
                     nullable: true,
                     items: {
                         type: Type.OBJECT,
@@ -45,10 +45,14 @@ const responseSchema = {
                         required: ['id', 'text']
                     }
                 },
-                question: { type: Type.STRING, description: "For 'inputNode'.", nullable: true },
-                variableName: { type: Type.STRING, description: "For 'inputNode'.", nullable: true },
+                question: { type: Type.STRING, description: "For 'inputNode' or 'buttonInputNode'.", nullable: true },
+                variableName: { type: Type.STRING, description: "For 'inputNode' or 'buttonInputNode'.", nullable: true },
                 variable: { type: Type.STRING, description: "For 'conditionNode'.", nullable: true },
                 value: { type: Type.STRING, description: "For 'conditionNode'.", nullable: true },
+                url: { type: Type.STRING, description: "For 'imageNode'. URL of the image.", nullable: true },
+                caption: { type: Type.STRING, description: "For 'imageNode'. Caption for the image.", nullable: true },
+                seconds: { type: Type.NUMBER, description: "For 'delayNode'. Duration of delay in seconds.", nullable: true },
+                columns: { type: Type.NUMBER, description: "For 'inlineKeyboardNode'. Number of button columns.", nullable: true },
             }
           },
         },
@@ -65,7 +69,7 @@ const responseSchema = {
           source: { type: Type.STRING, description: 'The ID of the source node.' },
           target: { type: Type.STRING, description: 'The ID of the target node.' },
           animated: { type: Type.BOOLEAN, description: 'Whether the edge should be animated.', nullable: true },
-          sourceHandle: { type: Type.STRING, description: "For 'conditionNode' (true/false) or 'messageNode' with buttons (the button id).", nullable: true },
+          sourceHandle: { type: Type.STRING, description: "For 'conditionNode' (true/false) or nodes with buttons (the button id).", nullable: true },
         },
         required: ['id', 'source', 'target'],
       },
@@ -77,22 +81,32 @@ const responseSchema = {
 const getSystemInstruction = () => {
     return `You are an expert Telegram bot flow designer. Your task is to generate a JSON structure representing a bot's logic based on a user's prompt.
 The JSON must adhere to the provided schema for nodes and edges, suitable for rendering with React Flow.
-You must logically arrange the nodes on a 2D canvas, ensuring a clean and readable layout. A good vertical distance between nodes is 150 pixels.
+You must logically arrange the nodes on a 2D canvas, ensuring a clean and readable layout. A good vertical distance between nodes is 150-200 pixels.
 
 Here are the available node types and their required 'data' properties:
 1.  'startNode': The entry point. Always include one.
     - data: { "label": "Start" }
 2.  'messageNode': Sends a message to the user. It can have quick reply buttons, which create separate output paths.
     - data: { "text": "Your message here.", "buttons": [{ "id": "btn_123", "text": "Option 1" }] }
-3.  'inputNode': Asks a question and saves the user's answer to a variable.
+3.  'inputNode': Asks a question and waits for a text reply, saving it to a variable.
     - data: { "question": "Your question?", "variableName": "variable_name_without_spaces" }
 4.  'conditionNode': Branches the flow based on whether a variable contains a certain value. It has two outputs: 'true' and 'false'.
     - data: { "variable": "variable_to_check", "value": "text_to_look_for" }
+5.  'imageNode': Sends an image.
+    - data: { "url": "https://example.com/image.png", "caption": "Optional caption." }
+6.  'delayNode': Pauses the flow for a few seconds.
+    - data: { "seconds": 3 }
+7.  'buttonInputNode': Asks a question and provides buttons for the answer. Saves the chosen button text to a variable. It has a single output.
+    - data: { "question": "Your question?", "variableName": "saved_choice", "buttons": [{ "id": "btn_abc", "text": "Choice 1" }] }
+8.  'inlineKeyboardNode': Similar to 'messageNode', sends a message with buttons that create separate output paths. Can be arranged in columns.
+    - data: { "text": "Your message here.", "buttons": [{ "id": "btn_123", "text": "Option 1" }], "columns": 2 }
+
 
 Edge Rules:
 - Edges connect nodes. The 'source' and 'target' fields must match node 'id's.
 - For 'conditionNode', you must create two edges originating from it. One must have 'sourceHandle': 'true' and the other 'sourceHandle': 'false'.
-- For 'messageNode' with buttons, each button must have a corresponding outgoing edge. The edge's 'sourceHandle' must match the button's 'id'.
+- For 'messageNode' or 'inlineKeyboardNode' with buttons, each button must have a corresponding outgoing edge. The edge's 'sourceHandle' must match the button's 'id'.
+- All nodes except branching ones (message, condition, inlineKeyboard) should have one or zero outgoing edges with no 'sourceHandle'.
 - All edges should have 'animated': true.
 
 Layout Rules:
@@ -197,7 +211,10 @@ const suggestionSchema = {
                             },
                             required: ['id', 'text']
                         }
-                    }
+                    },
+                    url: { type: Type.STRING, nullable: true },
+                    caption: { type: Type.STRING, nullable: true },
+                    seconds: { type: Type.NUMBER, nullable: true },
                 }
             },
             suggestionText: { type: Type.STRING, description: 'A brief, user-friendly description of the action.' },
@@ -210,14 +227,15 @@ const getSuggestionSystemInstruction = () => `You are an expert Telegram bot flo
 - Analyze the provided source node from which the user is creating a new connection.
 - Based on the source node's type and data, predict what the user likely wants to do next.
 - Return a JSON array of 1 to 3 suggestions. Each suggestion must be an object containing:
-  1. "type": The suggested node type (e.g., 'messageNode', 'inputNode', 'conditionNode').
+  1. "type": The suggested node type (e.g., 'messageNode', 'inputNode', 'conditionNode', 'imageNode', 'delayNode', 'buttonInputNode').
   2. "data": The suggested initial data for the new node. Make it context-aware. For example, if the source node saved a variable 'name', a suggested messageNode could have the text "Nice to meet you, {name}!".
   3. "suggestionText": A brief, user-friendly description of the action, e.g., "Send a welcome message" or "Ask for their email".
 
 Example Scenarios:
 - If the source node is an 'inputNode' asking for a 'name', you might suggest a 'messageNode' that uses the '{name}' variable.
-- If the source node is a 'messageNode' that ends in a question but has no buttons, you might suggest a 'messageNode' with 'Yes'/'No' buttons.
-- If the source node is an 'inputNode', you might suggest a 'conditionNode' to check the input.
+- If the source node is a 'messageNode' that ends in a question but has no buttons, you might suggest a 'buttonInputNode' with 'Yes'/'No' buttons.
+- If the source node is an 'inputNode', you might suggest a 'conditionNode' to check the input or a 'delayNode' to make it feel more human.
+- After a welcome message, you might suggest sending an 'imageNode' with a product photo.
 
 Your output MUST be ONLY the JSON array. Do not include any other text, markdown, or explanations.`;
 

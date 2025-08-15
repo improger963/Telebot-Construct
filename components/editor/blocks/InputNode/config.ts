@@ -12,7 +12,7 @@ const z = {
 
 export const inputBlockConfig: BlockConfig = {
   type: 'inputNode',
-  name: 'User Input',
+  name: 'Text Input',
   icon: InputIcon,
   color: 'bg-brand-purple',
   component: InputNode,

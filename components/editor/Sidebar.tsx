@@ -23,14 +23,19 @@ const BlocksPanel: React.FC = () => {
         event.dataTransfer.effectAllowed = 'move';
     };
 
+    const botActionTypes = ['messageNode', 'inlineKeyboardNode', 'imageNode', 'delayNode'];
+    const userInputLogicTypes = ['inputNode', 'buttonInputNode', 'conditionNode'];
+
+    const botActionBlocks = blockConfigs.filter(c => botActionTypes.includes(c.type));
+    const userInputLogicBlocks = blockConfigs.filter(c => userInputLogicTypes.includes(c.type));
+
     return (
         <div>
             <h3 className="text-xl font-bold mb-2 text-text-primary">Blocks</h3>
             <p className="text-xs text-text-secondary mb-6">Drag blocks onto the canvas to build your bot.</p>
             
-            {blockConfigs.map(config => (
-                // StartNode is not draggable from the sidebar
-                config.type !== 'startNode' && (
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3">Bot Actions</h4>
+            {botActionBlocks.map(config => (
                 <NodeItem 
                     key={config.type}
                     type={config.type}
@@ -39,7 +44,18 @@ const BlocksPanel: React.FC = () => {
                     color={config.color}
                     icon={<config.icon className="h-5 w-5 text-white" />}
                 />
-                )
+            ))}
+
+            <h4 className="text-sm font-bold text-text-secondary uppercase tracking-wider mb-3 mt-6">User Input &amp; Logic</h4>
+             {userInputLogicBlocks.map(config => (
+                <NodeItem 
+                    key={config.type}
+                    type={config.type}
+                    label={config.name}
+                    onDragStart={(event) => onDragStart(event, config.type)}
+                    color={config.color}
+                    icon={<config.icon className="h-5 w-5 text-white" />}
+                />
             ))}
         </div>
     )

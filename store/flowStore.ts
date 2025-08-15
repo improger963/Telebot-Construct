@@ -3,7 +3,8 @@ import {
   addEdge as rfAddEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  ReactFlowInstance
+  ReactFlowInstance,
+  getConnectedEdges
 } from 'reactflow';
 import type {
   Connection,
@@ -33,6 +34,8 @@ type RFState = {
   addEdge: (edge: Edge | Connection) => void;
   setActiveNodeId: (nodeId: string | null) => void;
   setReactFlowInstance: (instance: ReactFlowInstance | null) => void;
+  deleteSelectedElements: () => void;
+  duplicateSelectedNode: () => void;
 };
 
 export const useFlowStore = create<RFState>((set, get) => ({
@@ -64,12 +67,6 @@ export const useFlowStore = create<RFState>((set, get) => ({
         newSelectedNode = updatedNode || null; // If deleted, it becomes null
       }
       
-      // Highlight node on selection for variable panel
-      const selectedNodes = newNodes.map(node => ({
-        ...node,
-        className: lastSelectionChange?.id === node.id ? 'highlight-node' : ''
-      }));
-
       return { nodes: newNodes, selectedNode: newSelectedNode };
     });
   },
@@ -80,11 +77,13 @@ export const useFlowStore = create<RFState>((set, get) => ({
   },
   onConnect: (connection: Connection) => {
     set({
-      edges: rfAddEdge(connection, get().edges),
+      edges: rfAddEdge({ ...connection, type: 'custom' }, get().edges),
     });
   },
   setFlow: (flow: FlowData) => {
-    set({ nodes: flow.nodes, edges: flow.edges, selectedNode: null, activeNodeId: null });
+    // Ensure all edges have the custom type
+    const edges = flow.edges.map(e => ({...e, type: 'custom'}));
+    set({ nodes: flow.nodes, edges, selectedNode: null, activeNodeId: null });
   },
   updateNodeData: (nodeId: string, data: any) => {
     set({
@@ -108,7 +107,7 @@ export const useFlowStore = create<RFState>((set, get) => ({
   },
   addEdge: (edge: Edge | Connection) => {
     set({
-        edges: rfAddEdge(edge, get().edges),
+        edges: rfAddEdge({ ...edge, type: 'custom' }, get().edges),
     });
   },
   setActiveNodeId: (nodeId: string | null) => {
@@ -116,5 +115,37 @@ export const useFlowStore = create<RFState>((set, get) => ({
   },
   setReactFlowInstance: (instance: ReactFlowInstance | null) => {
     set({ reactFlowInstance: instance });
+  },
+  deleteSelectedElements: () => {
+    const { nodes, edges } = get();
+    const selectedNodes = nodes.filter(n => n.selected);
+    const selectedEdges = edges.filter(e => e.selected);
+    
+    if (selectedNodes.length === 0 && selectedEdges.length === 0) return;
+
+    const connectedEdges = getConnectedEdges(selectedNodes, edges);
+    const edgesToRemove = [...selectedEdges, ...connectedEdges];
+    const edgeIdsToRemove = new Set(edgesToRemove.map(e => e.id));
+
+    set({
+      nodes: nodes.filter(n => !n.selected),
+      edges: edges.filter(e => !edgeIdsToRemove.has(e.id)),
+      selectedNode: null,
+    });
+  },
+  duplicateSelectedNode: () => {
+    const { selectedNode } = get();
+    if (!selectedNode) return;
+
+    const newNode: Node = {
+      ...selectedNode,
+      id: `${selectedNode.type}_${+new Date()}`,
+      position: {
+        x: selectedNode.position.x + 30,
+        y: selectedNode.position.y + 30,
+      },
+      selected: false,
+    };
+    get().addNode(newNode);
   },
 }));

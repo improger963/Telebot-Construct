@@ -109,6 +109,39 @@
       .react-flow__node.highlight-node > div {
         box-shadow: 0 0 0 2px #0A84FF, 0 0 20px 5px rgba(10, 132, 255, 0.5);
       }
+      .react-flow__connection-path {
+        stroke: #34C759;
+        stroke-width: 2px;
+        animation: dashdraw .5s linear infinite;
+      }
+       @keyframes dashdraw {
+        from {
+            stroke-dashoffset: 10;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+      }
+
+      /* Custom Edge Delete Button */
+      .edgebutton {
+        width: 20px;
+        height: 20px;
+        background: #3A3A3C;
+        border: 1px solid #4a5568;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 12px;
+        line-height: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #F2F2F7;
+      }
+      .edgebutton:hover {
+        background: #FF453A;
+        border-color: #FF453A;
+      }
 
 
       /* Welcome Guide Styles */
@@ -128,10 +161,10 @@
         transform: translateX(0);
       }
       
-      /* AI Suggestions Popup */
-      .ai-suggestions-popup {
+      /* AI Suggestions & Context Menu */
+      .ai-suggestions-popup, .context-menu {
         animation: scaleIn 0.2s ease-out forwards;
-        transform-origin: top left; /* Adjust based on positioning logic */
+        transform-origin: top left;
       }
     </style>
     <script>
@@ -178,7 +211,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-background text-text-primary">
     <div id="root"></div>

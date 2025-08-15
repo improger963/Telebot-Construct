@@ -2,9 +2,13 @@ import type { Node, Edge } from 'reactflow';
 import { BlockData } from '../types';
 
 export type SimulatorState = {
-  messages: Array<{ id: number; text: string; sender: 'bot' | 'user' }>;
+  messages: Array<{ id: number; text: string; sender: 'bot' | 'user'; imageUrl?: string }>;
   status: 'running' | 'waiting' | 'finished' | 'error';
   waitingForInput?: {
+    nodeId: string;
+    variableName: string;
+  };
+   waitingForButtonInput?: {
     nodeId: string;
     variableName: string;
   };
@@ -45,6 +49,7 @@ export class FlowRunner {
         messages: [],
         status: 'running',
         waitingForInput: undefined,
+        waitingForButtonInput: undefined,
         availableButtons: undefined,
     });
 
@@ -77,20 +82,40 @@ export class FlowRunner {
   }
 
   public pressButton(handleId: string) {
-    if (!this.currentNodeId) {
-      this.reportError("Button pressed but no active node context.");
-      return;
-    }
-    const buttonText = this.onStateChange(undefined, true).availableButtons?.find(b => b.handleId === handleId)?.text;
-    this.addMessage(buttonText || 'Selected an option', 'user');
+    const currentState = this.onStateChange(undefined, true);
+    if (currentState.status !== 'waiting') return;
 
-    this.onStateChange({ status: 'running', availableButtons: undefined });
-    const nextNode = this.findNextNode(this.currentNodeId, handleId);
+    const button = currentState.availableButtons?.find(b => b.handleId === handleId);
+    if (!button) return;
 
-    if (nextNode) {
-      this.processNode(nextNode.id);
+    this.addMessage(button.text, 'user');
+    
+    if (currentState.waitingForButtonInput) {
+        // It's a ButtonInputNode
+        const { nodeId, variableName } = currentState.waitingForButtonInput;
+        this.variables[variableName] = button.text;
+        this.onStateChange({ status: 'running', waitingForButtonInput: undefined, availableButtons: undefined });
+
+        const nextNode = this.findNextNode(nodeId); // Single output
+        if (nextNode) {
+            this.processNode(nextNode.id);
+        } else {
+            this.finishFlow();
+        }
     } else {
-      this.finishFlow();
+        // It's a MessageNode or InlineKeyboardNode (branching)
+        if (!this.currentNodeId) {
+            this.reportError("Button pressed but no active node context.");
+            return;
+        }
+        this.onStateChange({ status: 'running', availableButtons: undefined });
+        const nextNode = this.findNextNode(this.currentNodeId, handleId);
+
+        if (nextNode) {
+            this.processNode(nextNode.id);
+        } else {
+            this.finishFlow();
+        }
     }
   }
   
@@ -103,6 +128,11 @@ export class FlowRunner {
       this.reportError(`Node with ID ${nodeId} not found.`);
       return;
     }
+
+    if (node.type === 'delayNode') {
+      this.handleDelayNode(node);
+      return;
+    }
     
     // Simulate processing time
     setTimeout(() => {
@@ -111,13 +141,20 @@ export class FlowRunner {
                 this.handleStartNode(node);
                 break;
             case 'messageNode':
+            case 'inlineKeyboardNode':
                 this.handleMessageNode(node);
                 break;
             case 'inputNode':
                 this.handleInputNode(node);
                 break;
+            case 'buttonInputNode':
+                this.handleButtonInputNode(node);
+                break;
             case 'conditionNode':
                 this.handleConditionNode(node);
+                break;
+            case 'imageNode':
+                this.handleImageNode(node);
                 break;
             default:
                 this.reportError(`Unknown node type: ${node.type}`);
@@ -167,6 +204,42 @@ export class FlowRunner {
     });
   }
 
+  private handleButtonInputNode(node: Node) {
+    const question = this.substituteVariables(node.data.question);
+    this.addMessage(question, 'bot');
+    this.onStateChange({
+        status: 'waiting',
+        waitingForButtonInput: {
+            nodeId: node.id,
+            variableName: node.data.variableName,
+        },
+        availableButtons: node.data.buttons.map(b => ({ text: b.text, handleId: b.id })),
+    });
+  }
+
+  private handleImageNode(node: Node) {
+    const caption = this.substituteVariables(node.data.caption);
+    this.addMessage(caption || '[Image]', 'bot', node.data.url);
+    const nextNode = this.findNextNode(node.id);
+    if (nextNode) {
+        this.processNode(nextNode.id);
+    } else {
+        this.finishFlow();
+    }
+  }
+  
+  private handleDelayNode(node: Node) {
+    const delaySeconds = node.data.seconds || 1;
+    setTimeout(() => {
+        const nextNode = this.findNextNode(node.id);
+        if (nextNode) {
+            this.processNode(nextNode.id);
+        } else {
+            this.finishFlow();
+        }
+    }, delaySeconds * 1000);
+  }
+
   private handleConditionNode(node: Node) {
     const variableName = node.data.variable;
     const valueToCheck = node.data.value;
@@ -199,8 +272,8 @@ export class FlowRunner {
     });
   }
   
-  private addMessage(text: string, sender: 'bot' | 'user') {
-    this.onStateChange({ messages: [...this.onStateChange(undefined, true).messages, { id: this.messageCounter++, text, sender }] });
+  private addMessage(text: string, sender: 'bot' | 'user', imageUrl?: string) {
+    this.onStateChange({ messages: [...this.onStateChange(undefined, true).messages, { id: this.messageCounter++, text, sender, imageUrl }] });
   }
 
   private finishFlow() {

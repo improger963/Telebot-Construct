@@ -95,7 +95,10 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
                 {simState.messages.map(msg => (
                     <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-xs px-4 py-2 rounded-2xl ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-lg' : 'bg-input text-text-primary rounded-bl-lg'}`}>
-                            <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                            {msg.imageUrl && (
+                              <img src={msg.imageUrl} alt={msg.text} className="rounded-lg mb-2 max-w-full h-auto" />
+                            )}
+                            {msg.text && msg.text !== '[Image]' && <p className="text-sm whitespace-pre-wrap">{msg.text}</p>}
                         </div>
                     </div>
                 ))}
@@ -115,7 +118,7 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
 
             {/* Input or Buttons */}
             <div className="flex-shrink-0 p-3 bg-input border-t border-surface">
-                {simState.availableButtons && simState.availableButtons.length > 0 ? (
+                {simState.availableButtons && simState.availableButtons.length > 0 && simState.status === 'waiting' ? (
                     <div className="space-y-2">
                         {simState.availableButtons.map(button => (
                             <button

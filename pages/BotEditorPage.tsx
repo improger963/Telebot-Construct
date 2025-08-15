@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ReactFlow, ReactFlowProvider, Background, Controls, Node, ReactFlowInstance, useReactFlow } from 'reactflow';
+import { ReactFlow, ReactFlowProvider, Background, Controls, Node, ReactFlowInstance, useReactFlow, MiniMap, Edge } from 'reactflow';
 
 import { useFlowStore } from '../store/flowStore.ts';
 import Sidebar from '../components/editor/Sidebar.tsx';
@@ -13,6 +13,10 @@ import BotSimulator from '../components/simulator/BotSimulator.tsx';
 import { PlayIcon } from '../components/icons/PlayIcon.tsx';
 import NodeSuggestions from '../components/editor/NodeSuggestions.tsx';
 import { NodeSuggestion } from '../types.ts';
+import ContextMenu from '../components/editor/ContextMenu.tsx';
+import CustomEdge from '../components/editor/edges/CustomEdge.tsx';
+
+const proOptions = { hideAttribution: true };
 
 const BotEditorPageInternal: React.FC = () => {
   const { botId } = useParams<{ botId: string }>();
@@ -27,6 +31,8 @@ const BotEditorPageInternal: React.FC = () => {
     addNode,
     setReactFlowInstance,
     addEdge,
+    deleteSelectedElements,
+    duplicateSelectedNode,
   } = useFlowStore();
 
   const [botName, setBotName] = useState<string>('Loading...');
@@ -37,7 +43,6 @@ const BotEditorPageInternal: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(!localStorage.getItem('hasSeenWelcomeGuide'));
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   
-  // Hooks that require context are now correctly used inside the provider's descendant.
   const { screenToFlowPosition, getNode } = useReactFlow();
 
   const [suggestionState, setSuggestionState] = useState<{
@@ -47,6 +52,13 @@ const BotEditorPageInternal: React.FC = () => {
     sourceHandle: string | null;
   }>({ isOpen: false, position: null, sourceNode: null, sourceHandle: null });
 
+  const [menu, setMenu] = useState<{
+    id: string;
+    top: number;
+    left: number;
+    type: 'node' | 'pane';
+  } | null>(null);
+
 
   const nodeTypes = useMemo(() => {
     return Object.values(blockRegistry).reduce((acc, config) => {
@@ -54,6 +66,10 @@ const BotEditorPageInternal: React.FC = () => {
         return acc;
     }, {} as Record<string, React.ComponentType<any>>);
   }, []);
+
+  const edgeTypes = useMemo(() => ({
+    custom: CustomEdge,
+  }), []);
 
 
   useEffect(() => {
@@ -89,6 +105,26 @@ const BotEditorPageInternal: React.FC = () => {
         setIsSaving(false);
     }
   }, [botId, nodes, edges]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+        deleteSelectedElements();
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+        event.preventDefault();
+        duplicateSelectedNode();
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [deleteSelectedElements, duplicateSelectedNode, handleSave]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -152,9 +188,8 @@ const BotEditorPageInternal: React.FC = () => {
     const sourceNode = suggestionState.sourceNode;
     const { position, width, height } = sourceNode;
     
-    // Position the new node below the source node, with fallbacks for safety.
     const newNodePosition = {
-      x: position.x + (width || 288) / 2 - 150, // 288px is w-72, a common node width.
+      x: position.x + (width || 288) / 2 - 150,
       y: position.y + (height || 100) + 75,
     };
 
@@ -166,21 +201,37 @@ const BotEditorPageInternal: React.FC = () => {
     };
     addNode(newNode);
     
-    // Connect the nodes
-    const newEdge = {
+    const newEdge: Edge = {
       id: `e-${sourceNode.id}-${newNode.id}`,
       source: sourceNode.id,
       target: newNode.id,
       sourceHandle: suggestionState.sourceHandle,
       animated: true,
+      type: 'custom'
     };
     addEdge(newEdge);
 
     setSuggestionState({ isOpen: false, position: null, sourceNode: null, sourceHandle: null });
   }, [suggestionState.sourceNode, suggestionState.sourceHandle, addNode, addEdge]);
 
+  const onNodeContextMenu = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      event.preventDefault();
+      setMenu({ id: node.id, top: event.clientY, left: event.clientX, type: 'node' });
+    },
+    [setMenu]
+  );
+
+  const onPaneContextMenu = useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      setMenu({ id: 'pane', top: event.clientY, left: event.clientX, type: 'pane' });
+    },
+    [setMenu]
+  );
+
   return (
-    <div className="h-screen w-full flex flex-col -m-8 bg-background overflow-hidden">
+    <div className="h-screen w-full flex flex-col -m-8 bg-background overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
        <div className="flex justify-between items-center p-4 bg-surface border-b border-input flex-shrink-0 z-10">
             <div className="flex items-center gap-4">
                  <Link to="/dashboard" className="text-text-secondary hover:text-text-primary transition-colors">&larr; Back to Bots</Link>
@@ -215,7 +266,7 @@ const BotEditorPageInternal: React.FC = () => {
         <div className="flex-grow flex min-h-0 relative">
             {showWelcome && <WelcomeGuide onDismiss={handleWelcomeDismiss} />}
             <Sidebar />
-            <div className="flex-grow h-full" ref={reactFlowWrapper}>
+            <div className="flex-grow h-full" ref={reactFlowWrapper} onClick={() => setMenu(null)}>
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
@@ -225,13 +276,18 @@ const BotEditorPageInternal: React.FC = () => {
                     onConnectStart={onConnectStart}
                     onConnectEnd={onConnectEnd}
                     nodeTypes={nodeTypes}
+                    edgeTypes={edgeTypes}
                     onInit={setReactFlowInstance}
                     onDrop={onDrop}
                     onDragOver={onDragOver}
+                    onNodeContextMenu={onNodeContextMenu}
+                    onPaneContextMenu={onPaneContextMenu}
                     fitView
+                    proOptions={proOptions}
                 >
                     <Background color="#3A3A3C" gap={24} />
                     <Controls />
+                    <MiniMap nodeStrokeWidth={3} zoomable pannable />
                 </ReactFlow>
             </div>
             {selectedNode && <SettingsPanel />}
@@ -247,6 +303,7 @@ const BotEditorPageInternal: React.FC = () => {
                 onSelect={handleSuggestionClick}
               />
             )}
+            {menu && <ContextMenu {...menu} onClose={() => setMenu(null)} />}
         </div>
     </div>
   );
