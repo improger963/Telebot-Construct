@@ -39,7 +39,7 @@ const DashboardPage: React.FC = () => {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {Array.from({ length: 4 }).map((_, i) => (
             <SkeletonBotCard key={i} />
           ))}
@@ -49,7 +49,7 @@ const DashboardPage: React.FC = () => {
     
     if (bots.length > 0) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {bots.map((bot: Bot, index: number) => (
             <BotCard key={bot.id} bot={bot} index={index} onDeleteClick={() => openDeleteConfirm(bot)} />
           ))}
@@ -58,13 +58,13 @@ const DashboardPage: React.FC = () => {
     }
     
     return (
-      <div className="text-center py-20 px-6 bg-surface rounded-2xl flex flex-col items-center animate-scaleIn">
-        <Logo className="w-20 h-20 text-brand-green mb-4" />
-        <h2 className="text-2xl font-semibold mb-2">Create your first bot!</h2>
-        <p className="text-text-secondary mb-6 max-w-sm">It looks like you don't have any bots yet. Let's create one to get started.</p>
+      <div className="text-center py-20 px-6 bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl flex flex-col items-center animate-scaleIn">
+        <Logo className="w-24 h-24 text-brand-emerald mb-6" />
+        <h2 className="text-3xl font-bold mb-3">Create your first bot!</h2>
+        <p className="text-text-secondary mb-8 max-w-sm">It looks like you don't have any bots yet. Let's create one to get started.</p>
          <button
             onClick={() => setIsModalOpen(true)}
-            className="py-3 px-6 font-semibold text-primary-text bg-primary rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
+            className="group relative px-8 py-3 font-bold text-lg text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-2xl hover:shadow-2xl hover:shadow-brand-emerald/30 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
           >
             + Create New Bot
           </button>
@@ -74,11 +74,11 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">My Bots</h1>
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">My Bots</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="py-3 px-5 font-semibold text-primary-text bg-primary rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
+          className="group relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden"
         >
           + Create New Bot
         </button>

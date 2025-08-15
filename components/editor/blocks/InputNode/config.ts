@@ -14,7 +14,7 @@ export const inputBlockConfig: BlockConfig = {
   type: 'inputNode',
   name: 'Text Input',
   icon: InputIcon,
-  color: 'bg-brand-purple',
+  color: 'bg-brand-violet',
   component: InputNode,
   settingsComponent: InputSettings,
   initialData: { question: 'What is your name?', variableName: 'name' },

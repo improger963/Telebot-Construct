@@ -15,7 +15,7 @@ export const inlineKeyboardBlockConfig: BlockConfig = {
   type: 'inlineKeyboardNode',
   name: 'Inline Keyboard',
   icon: InlineKeyboardIcon,
-  color: 'bg-cyan-500',
+  color: 'bg-brand-cyan',
   component: InlineKeyboardNode,
   settingsComponent: InlineKeyboardSettings,
   initialData: {

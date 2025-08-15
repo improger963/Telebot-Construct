@@ -1,22 +1,15 @@
 import React from 'react';
 
 const Logo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M12 8V4H8" />
-    <rect x="4" y="4" width="16" height="16" rx="2" />
-    <path d="M2 14h2" />
-    <path d="M20 14h2" />
-    <path d="M15 13v2" />
-    <path d="M9 13v2" />
+  <svg viewBox="0 0 32 32" {...props}>
+    <defs>
+      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#34d399" />
+      </linearGradient>
+    </defs>
+    <rect x="4" y="4" width="24" height="24" rx="6" fill="url(#logoGradient)" />
+    <path d="M12 10v12l8-6z" fill="white" />
   </svg>
 );
 

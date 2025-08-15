@@ -14,7 +14,7 @@ export const buttonInputBlockConfig: BlockConfig = {
   type: 'buttonInputNode',
   name: 'Button Input',
   icon: ButtonInputIcon,
-  color: 'bg-teal-500',
+  color: 'bg-brand-teal',
   component: ButtonInputNode,
   settingsComponent: ButtonInputSettings,
   initialData: {

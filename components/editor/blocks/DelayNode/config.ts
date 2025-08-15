@@ -13,7 +13,7 @@ export const delayBlockConfig: BlockConfig = {
   type: 'delayNode',
   name: 'Delay',
   icon: DelayIcon,
-  color: 'bg-gray-500',
+  color: 'bg-slate-500',
   component: DelayNode,
   settingsComponent: DelaySettings,
   initialData: { seconds: 1 },

@@ -72,13 +72,13 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
   };
 
   return (
-    <div className={`simulator-panel fixed top-0 right-0 h-full p-4 z-20 ${isOpen ? 'open' : ''}`}>
-        <div className="bg-surface rounded-3xl shadow-2xl w-96 h-full flex flex-col border-4 border-input overflow-hidden animate-slideInFromRight">
+    <div className={`simulator-panel fixed top-20 right-0 h-[calc(100vh-5rem)] p-4 z-20 ${isOpen ? 'open' : ''}`}>
+        <div className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl w-96 h-full flex flex-col border-2 border-slate-700/50 overflow-hidden animate-slideInFromRight">
             {/* Header */}
-            <div className="flex-shrink-0 p-4 bg-input flex justify-between items-center">
+            <div className="flex-shrink-0 p-4 bg-input flex justify-between items-center border-b border-slate-700/50">
                 <div>
                     <h3 className="font-bold text-text-primary">{botName}</h3>
-                    <p className="text-xs text-brand-green">Online</p>
+                    <p className="text-xs text-brand-emerald">Online</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button onClick={handleRestart} className="p-2 text-text-secondary hover:text-text-primary rounded-full hover:bg-surface transition-colors" aria-label="Restart conversation">
@@ -94,7 +94,7 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
             <div className="flex-grow p-4 overflow-y-auto bg-background space-y-4">
                 {simState.messages.map(msg => (
                     <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-xs px-4 py-2 rounded-2xl ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-lg' : 'bg-input text-text-primary rounded-bl-lg'}`}>
+                        <div className={`max-w-xs px-4 py-2 rounded-2xl ${msg.sender === 'user' ? 'bg-brand-cyan text-white rounded-br-lg' : 'bg-input text-text-primary rounded-bl-lg'}`}>
                             {msg.imageUrl && (
                               <img src={msg.imageUrl} alt={msg.text} className="rounded-lg mb-2 max-w-full h-auto" />
                             )}
@@ -117,14 +117,14 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
             </div>
 
             {/* Input or Buttons */}
-            <div className="flex-shrink-0 p-3 bg-input border-t border-surface">
+            <div className="flex-shrink-0 p-3 bg-input border-t border-slate-700/50">
                 {simState.availableButtons && simState.availableButtons.length > 0 && simState.status === 'waiting' ? (
                     <div className="space-y-2">
                         {simState.availableButtons.map(button => (
                             <button
                                 key={button.handleId}
                                 onClick={() => handleButtonPress(button.handleId)}
-                                className="w-full text-center px-4 py-3 text-brand-blue font-semibold bg-background rounded-full hover:bg-surface transition-colors"
+                                className="w-full text-center px-4 py-3 text-brand-cyan font-semibold bg-background rounded-full hover:bg-surface transition-colors"
                             >
                                 {button.text}
                             </button>
@@ -138,7 +138,7 @@ const BotSimulator: React.FC<BotSimulatorProps> = ({ isOpen, onClose, botName })
                             onChange={e => setUserInput(e.target.value)}
                             placeholder={simState.waitingForInput ? "Type your message..." : "Waiting for bot..."}
                             disabled={!simState.waitingForInput}
-                            className="w-full px-4 py-3 text-text-primary bg-background rounded-full border-none focus:outline-none focus:ring-2 focus:ring-brand-green disabled:opacity-50"
+                            className="w-full px-4 py-3 text-text-primary bg-background rounded-full border-none focus:outline-none focus:ring-2 focus:ring-brand-emerald disabled:opacity-50"
                         />
                     </form>
                 )}

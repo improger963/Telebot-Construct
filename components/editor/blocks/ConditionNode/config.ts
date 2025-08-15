@@ -13,7 +13,7 @@ export const conditionBlockConfig: BlockConfig = {
   type: 'conditionNode',
   name: 'Condition',
   icon: ConditionIcon,
-  color: 'bg-brand-orange',
+  color: 'bg-brand-amber',
   component: ConditionNode,
   settingsComponent: ConditionSettings,
   initialData: { variable: 'userInput', value: 'yes' },

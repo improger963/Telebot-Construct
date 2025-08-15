@@ -13,7 +13,7 @@ export const messageBlockConfig: BlockConfig = {
   type: 'messageNode',
   name: 'Message',
   icon: MessageIcon,
-  color: 'bg-brand-blue',
+  color: 'bg-brand-cyan',
   component: MessageNode,
   settingsComponent: MessageSettings,
   initialData: { text: 'New message', buttons: [] },

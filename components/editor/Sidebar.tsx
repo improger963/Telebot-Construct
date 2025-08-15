@@ -6,11 +6,11 @@ import VariablesPanel from './VariablesPanel';
 
 const NodeItem = ({ type, label, onDragStart, color, icon }: { type: string, label: string, onDragStart: (event: React.DragEvent) => void, color: string, icon: React.ReactNode }) => (
     <div
-      className="p-4 border border-input rounded-lg cursor-grab bg-input mb-4 flex items-center space-x-3 hover:border-brand-green transition-all duration-200 ease-in-out hover:scale-105 active:shadow-lg active:shadow-brand-green/20"
+      className="p-3 border border-slate-700/50 rounded-xl cursor-grab bg-slate-800/50 mb-3 flex items-center space-x-4 hover:border-brand-emerald/50 hover:bg-slate-700/50 transition-all duration-200 ease-in-out hover:scale-105 active:shadow-lg active:shadow-brand-emerald/10"
       onDragStart={onDragStart}
       draggable
     >
-        <div className={`w-8 h-8 rounded-md flex items-center justify-center ${color}`}>
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
             {icon}
         </div>
         <span className="font-medium text-text-primary">{label}</span>
@@ -66,7 +66,7 @@ const Sidebar: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'blocks' | 'variables'>('blocks');
 
   return (
-    <aside className="w-80 bg-surface border-r border-input flex flex-col flex-shrink-0 z-10">
+    <aside className="w-80 bg-slate-900/50 backdrop-blur-xl border-r border-slate-800/50 flex flex-col flex-shrink-0 z-10">
       <div className="p-2 flex-shrink-0">
           <div className="bg-input p-1 rounded-lg flex gap-1">
               <button onClick={() => setActiveTab('blocks')} className={`w-1/2 py-2 rounded-md text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${activeTab === 'blocks' ? 'bg-surface text-text-primary' : 'text-text-secondary hover:bg-surface/50'}`}>

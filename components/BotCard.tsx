@@ -24,14 +24,18 @@ const BotCard: React.FC<BotCardProps> = ({ bot, index, onDeleteClick }) => {
   return (
     <div 
         onClick={handleNavigate}
-        className="bg-surface rounded-2xl shadow-lg p-6 flex flex-col justify-between h-48 hover:shadow-glow-green transition-all duration-300 ease-in-out cursor-pointer group relative opacity-0 animate-fadeInUp"
+        className="group relative overflow-hidden bg-gradient-to-br from-slate-900/50 to-slate-800/30 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 h-52 flex flex-col justify-between hover:border-brand-emerald/30 hover:shadow-2xl hover:shadow-brand-emerald/10 transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-[1.02] opacity-0 animate-fadeInUp"
         style={{ animationDelay: `${index * 100}ms` }}
     >
-      <div className="flex-grow">
+      {/* Animated border glow */}
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-brand-emerald/20 via-brand-violet/20 to-brand-amber/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 flex-grow">
         <h3 className="text-xl font-bold text-text-primary truncate">{bot.name}</h3>
         <p className="text-sm text-text-secondary mt-1">Token: ...{bot.telegramToken.slice(-6)}</p>
       </div>
-      <div className="flex justify-between items-end">
+      <div className="relative z-10 flex justify-between items-end">
         <p className="text-xs text-text-secondary">
           Created: {new Date(bot.createdAt).toLocaleDateString()}
         </p>
@@ -43,7 +47,7 @@ const BotCard: React.FC<BotCardProps> = ({ bot, index, onDeleteClick }) => {
       </div>
        <button
           onClick={handleDelete}
-          className="absolute top-3 right-3 text-text-secondary hover:text-brand-red opacity-0 group-hover:opacity-100 transition-all p-1 rounded-full hover:bg-input"
+          className="absolute top-4 right-4 text-text-secondary hover:text-brand-red z-20 opacity-0 group-hover:opacity-100 transition-all p-2 rounded-full hover:bg-input"
           aria-label="Delete bot"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

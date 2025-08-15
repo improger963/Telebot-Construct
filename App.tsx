@@ -34,36 +34,43 @@ const App: React.FC = () => {
     checkAuth();
   }, [checkAuth]);
 
+  // Use a different layout for the landing page
+  if (location.pathname === '/') {
+    return <LandingPage />;
+  }
+
   return (
     <div className="min-h-screen bg-background text-text-primary">
-      <ConditionalHeader />
-      <main className={`${!location.pathname.includes('/editor') ? 'p-4 sm:p-6 lg:p-8' : ''} animate-fadeIn`} key={location.pathname}>
-        <Routes>
-          {/* Public routes that redirect if logged in */}
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-          <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
-          
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bot/:botId/editor"
-            element={
-              <ProtectedRoute>
-                <BotEditorPage />
-              </ProtectedRoute>
-            }
-          />
+      <Header />
+      <main className="pt-20">
+        <div className={`${!location.pathname.includes('/editor') ? 'p-4 sm:p-6 lg:p-8' : ''} animate-fadeIn`} key={location.pathname}>
+            <Routes>
+              {/* Public routes that redirect if logged in */}
+              <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+              <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+              
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bot/:botId/editor"
+                element={
+                  <ProtectedRoute>
+                    <BotEditorPage />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+              {/* Redirect any other path to dashboard if logged in, otherwise to landing */}
+              <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
+            </Routes>
+        </div>
       </main>
     </div>
   );
@@ -71,18 +78,21 @@ const App: React.FC = () => {
 
 const AppWrapper: React.FC = () => (
     <HashRouter>
-        <App />
+        <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="*" element={<App />} />
+        </Routes>
     </HashRouter>
 );
 
-// Only show header on protected routes
+// Header is now shown on all pages except landing
 const ConditionalHeader: React.FC = () => {
   const location = useLocation();
-  const noHeaderPaths = ['/', '/login', '/register'];
-  if (noHeaderPaths.includes(location.pathname) || location.pathname.includes('/editor')) {
+  if (location.pathname === '/') {
     return null;
   }
   return <Header />;
 };
+
 
 export default AppWrapper;

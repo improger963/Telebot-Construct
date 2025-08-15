@@ -9,23 +9,23 @@ const ConditionNode: React.FC<NodeProps> = ({ data, id }) => {
   const isActive = activeNodeId === id;
 
   return (
-    <div className={`px-5 py-4 shadow-lg rounded-xl bg-surface border-t-4 border-brand-orange w-72 ${isActive ? 'node-active-highlight' : ''}`}>
+    <div className={`w-72 rounded-2xl shadow-lg bg-slate-800/60 backdrop-blur-lg border border-slate-700/50 border-t-4 border-brand-amber p-4 ${isActive ? 'node-active-highlight' : ''}`}>
       <Handle type="target" position={Position.Top} className="w-16 !bg-accent" />
       
-      <div className="flex items-center gap-3 mb-3 pb-2 border-b border-input">
-         <div className="w-8 h-8 rounded-md flex items-center justify-center bg-brand-orange/20">
-            <ConditionIcon className="h-5 w-5 text-brand-orange" />
+      <div className="flex items-center gap-3 mb-3 pb-3 border-b border-slate-700">
+         <div className="w-8 h-8 rounded-md flex items-center justify-center bg-brand-amber/20">
+            <ConditionIcon className="h-5 w-5 text-brand-amber" />
         </div>
         <div className="text-md font-bold text-text-primary">
           Condition
         </div>
       </div>
       
-      <div className="text-sm text-text-secondary space-y-1">
+      <div className="text-sm text-text-secondary space-y-2 p-1">
         <span>If</span>
-        <div className="font-mono bg-input p-1 rounded text-brand-orange w-full truncate">{`{${data.variable || 'variable'}}`}</div>
+        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`{${data.variable || 'variable'}}`}</div>
         <span>contains</span>
-        <div className="font-mono bg-input p-1 rounded text-brand-orange w-full truncate">{`"${data.value || 'value'}"`}</div>
+        <div className="font-mono bg-input p-2 rounded text-brand-amber w-full truncate">{`"${data.value || 'value'}"`}</div>
       </div>
 
       <Handle id="true" type="source" position={Position.Bottom} style={{ left: '25%' }} className="!bg-brand-green">

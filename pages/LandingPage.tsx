@@ -1,8 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../components/Logo';
-
-// Locally defined components to avoid creating new files
 
 // Icons for "How it works"
 const DescribeIcon: React.FC<{className?: string}> = (props) => (
@@ -24,301 +21,472 @@ const LaunchIcon: React.FC<{className?: string}> = (props) => (
 );
 
 // Icons for features
-const VisualBuilderIcon: React.FC = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-brand-purple">
+const VisualBuilderIcon: React.FC<{className?: string}> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-emerald-400" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
   </svg>
 );
 
-const AIPoweredIcon: React.FC = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-brand-blue">
+const AIPoweredIcon: React.FC<{className?: string}> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-violet-400" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846-.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
   </svg>
 );
 
-const RealtimeSimulatorIcon: React.FC = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-brand-orange">
+const RealtimeSimulatorIcon: React.FC<{className?: string}> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-4 text-amber-400" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
     <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 2.25-4.5 2.25V9.75Z" />
   </svg>
 );
 
-// Fictional company logos for the marquee
-const ApexDigitalLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 100 30" {...props}><text x="50" y="20" fontFamily="Arial" fontSize="16" fill="currentColor" textAnchor="middle">ApexDigital</text></svg>;
-const NexusCorpLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 100 30" {...props}><text x="50" y="20" fontFamily="Georgia" fontSize="18" fill="currentColor" textAnchor="middle" fontWeight="bold">NEXUS</text></svg>;
-const QuantumLeapLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 120 30" {...props}><text x="60" y="20" fontFamily="monospace" fontSize="16" fill="currentColor" textAnchor="middle">QUANTUMLEAP</text></svg>;
-const StellarSolutionsLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 150 30" {...props}><text x="75" y="20" fontFamily="Verdana" fontSize="14" fill="currentColor" textAnchor="middle" fontStyle="italic">Stellar Solutions</text></svg>;
-const FusionWorksLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 130 30" {...props}><text x="65" y="20" fontFamily="Arial Black" fontSize="16" fill="currentColor" textAnchor="middle">FusionWorks</text></svg>;
-const ZenithIncLogo: React.FC<{className?: string}> = (props) => <svg viewBox="0 0 100 30" {...props}><text x="50" y="20" fontFamily="Impact" fontSize="20" fill="currentColor" textAnchor="middle">ZENITH</text></svg>;
+const CompanyLogo: React.FC<{ name: string, className?: string }> = ({ name, className }) => (
+  <div className={`${className} font-bold text-lg tracking-wider opacity-60 hover:opacity-100 transition-all duration-300 cursor-default`}>
+    {name}
+  </div>
+);
 
+const Logo: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 32 32" className={className}>
+    <defs>
+      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#10b981" />
+        <stop offset="100%" stopColor="#34d399" />
+      </linearGradient>
+    </defs>
+    <rect x="4" y="4" width="24" height="24" rx="6" fill="url(#logoGradient)" />
+    <path d="M12 10v12l8-6z" fill="white" />
+  </svg>
+);
 
-// Hook for spotlight effect
-const useSpotlight = (ref: React.RefObject<HTMLElement>) => {
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
-
-        const handleMouseMove = (e: MouseEvent) => {
-            const rect = el.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            el.style.setProperty('--x', `${x}px`);
-            el.style.setProperty('--y', `${y}px`);
-        };
-        el.addEventListener('mousemove', handleMouseMove);
-        return () => el.removeEventListener('mousemove', handleMouseMove);
-    }, [ref]);
-};
-
-
-const FeatureCard: React.FC<{children: React.ReactNode, delay: number}> = ({ children, delay }) => {
+const FeatureCard: React.FC<{ children: React.ReactNode, delay: number, className?: string }> = ({ children, delay, className = "" }) => {
+    const [isVisible, setIsVisible] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
-    useSpotlight(cardRef);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => setIsVisible(true), delay);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (cardRef.current) {
+            observer.observe(cardRef.current);
+        }
+
+        return () => {
+            if (cardRef.current) {
+                observer.unobserve(cardRef.current);
+            }
+        };
+    }, [delay]);
+
     return (
-        <div ref={cardRef} className="spotlight-card bg-surface p-8 rounded-2xl transition-all duration-300 animate-fadeInUp border border-transparent hover:border-brand-green/30" style={{ animationDelay: `${delay}ms` }}>
-            <div className="relative z-10">{children}</div>
+        <div
+            ref={cardRef}
+            className={`
+                group relative overflow-hidden
+                bg-gradient-to-br from-slate-900/50 to-slate-800/30
+                backdrop-blur-xl border border-slate-700/50
+                rounded-3xl p-8 h-full
+                hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10
+                transition-all duration-500 ease-out
+                hover:-translate-y-2 hover:scale-[1.02]
+                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+                ${className}
+            `}
+            style={{
+                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.4) 100%)',
+            }}
+        >
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-violet-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+            <div className="relative z-10">
+                {children}
+            </div>
+            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
         </div>
     );
 };
 
+const AnimatedBackground: React.FC = () => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        let animationId: number;
+        
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = Array.from({ length: 50 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            speedX: (Math.random() - 0.5) * 0.5,
+            speedY: (Math.random() - 0.5) * 0.5,
+            opacity: Math.random() * 0.5 + 0.1
+        }));
+
+        const animate = () => {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+                if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(16, 185, 129, ${particle.opacity})`;
+                ctx.fill();
+            });
+            
+            animationId = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        return () => {
+            window.removeEventListener('resize', resizeCanvas);
+            cancelAnimationFrame(animationId);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none opacity-30" />;
+};
 
 const LandingPage: React.FC = () => {
-  const parallaxRef = useRef<HTMLDivElement>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const heroRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const parallax = parallaxRef.current;
-    if (!parallax) return;
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (heroRef.current) {
+                const rect = heroRef.current.getBoundingClientRect();
+                setMousePosition({
+                    x: (e.clientX - rect.left) / rect.width,
+                    y: (e.clientY - rect.top) / rect.height
+                });
+            }
+        };
 
-    const handleMouseMove = (e: MouseEvent) => {
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-        const x = (clientX / innerWidth - 0.5) * 40;
-        const y = (clientY / innerHeight - 0.5) * 40;
-        parallax.style.setProperty('--x', `${-x}px`);
-        parallax.style.setProperty('--y', `${-y}px`);
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
-  return (
-    <div className="bg-background text-text-primary -m-8 overflow-x-hidden">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-input/50">
-        <nav className="container mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-text-primary flex items-center gap-2 group">
-            <Logo className="h-8 w-8 text-brand-green group-hover:scale-110 transition-transform duration-300" />
-            TeleBot Constructor
-          </Link>
-          <div className="flex items-center space-x-2">
-            <Link
-              to="/login"
-              className="bg-surface hover:bg-input text-text-primary font-medium py-2 px-4 rounded-lg transition-all duration-200 ease-in-out active:scale-95 hover:scale-105"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="py-2 px-4 font-semibold text-primary-text bg-gradient-to-r from-brand-green to-green-400 rounded-lg hover:opacity-90 transition-all duration-200 ease-in-out active:scale-95 hover:scale-105"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </nav>
-      </header>
-      
-      <main>
-        {/* Hero Section */}
-        <section className="relative pt-40 pb-24 text-center overflow-hidden">
-           {/* Parallax Background */}
-            <div ref={parallaxRef} className="absolute inset-0 z-0 transition-transform duration-300 ease-out" style={{ transform: 'translate(var(--x, 0), var(--y, 0))' }}>
-                 <div className="absolute inset-0 bg-gradient-to-br from-background via-surface/10 to-background opacity-50"></div>
-                 {/* Floating UI elements */}
-                 <div className="absolute top-[20%] left-[15%] w-60 h-20 bg-surface/50 rounded-lg border border-input/50 transition-transform duration-500 ease-out" style={{ transform: 'translate(calc(var(--x, 0) * -0.5), calc(var(--y, 0) * -0.5))' }}></div>
-                 <div className="absolute bottom-[25%] left-[30%] w-48 h-16 bg-surface/50 rounded-lg border border-input/50 transition-transform duration-500 ease-out" style={{ transform: 'translate(calc(var(--x, 0) * 0.3), calc(var(--y, 0) * 0.3))' }}></div>
-                 <div className="absolute top-[30%] right-[18%] w-52 h-24 bg-surface/50 rounded-lg border border-input/50 transition-transform duration-500 ease-out" style={{ transform: 'translate(calc(var(--x, 0) * 0.8), calc(var(--y, 0) * 0.8))' }}></div>
-                 <div className="absolute bottom-[20%] right-[25%] w-64 h-12 bg-surface/50 rounded-lg border border-input/50 transition-transform duration-500 ease-out" style={{ transform: 'translate(calc(var(--x, 0) * -0.2), calc(var(--y, 0) * -0.2))' }}></div>
-            </div>
-          <div className="container relative z-10 mx-auto px-6 lg:px-8">
-            <div className="animate-fadeInUp">
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">
-                Create Powerful Telegram Bots. Visually.
-              </h1>
-              <p className="text-lg md:text-xl text-text-secondary max-w-3xl mx-auto mb-10">
-                Build, test, and deploy complex chat flows with our intuitive drag-and-drop editor.
-                Powered by AI, designed for creators. No code required.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  to="/register"
-                  className="inline-block py-4 px-8 font-bold text-lg text-white bg-gradient-to-r from-brand-green to-green-400 rounded-lg hover:opacity-90 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 shadow-lg shadow-brand-green/30 hover:shadow-glow-green"
+    return (
+        <div className="bg-slate-950 text-white min-h-screen overflow-x-hidden -m-8">
+            <AnimatedBackground />
+            
+            <header className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-2xl border-b border-slate-800/50">
+                <nav className="container mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
+                    <Link to="/" className="text-2xl font-bold flex items-center gap-3 group cursor-pointer">
+                        <Logo className="h-10 w-10 group-hover:scale-110 transition-transform duration-300" />
+                        <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                            TeleBot Constructor
+                        </span>
+                    </Link>
+                    <div className="flex items-center space-x-3">
+                        <Link to="/login" className="px-6 py-2.5 font-medium text-slate-300 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all duration-300 hover:scale-105">
+                            Login
+                        </Link>
+                        <Link to="/register" className="px-6 py-2.5 font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 hover:scale-105 active:scale-95">
+                            Sign Up
+                        </Link>
+                    </div>
+                </nav>
+            </header>
+
+            <main>
+                <section 
+                    ref={heroRef}
+                    className="relative pt-32 pb-20 text-center overflow-hidden min-h-screen flex items-center"
+                    style={{
+                        background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(16, 185, 129, 0.15) 0%, transparent 50%)`
+                    }}
                 >
-                  Get Started for Free
-                </Link>
-                <a href="#showcase" className="inline-block py-4 px-8 font-bold text-lg text-text-primary bg-surface/80 border border-input rounded-lg hover:bg-input transition-all duration-200 ease-in-out hover:scale-105 active:scale-95">
-                  See it in Action
-                </a>
-              </div>
-              <div className="mt-8 flex justify-center items-center gap-4 text-sm text-text-secondary animate-fadeInUp" style={{ animationDelay: '200ms' }}>
-                <span>✓ No code required</span>
-                <span>✓ Free to start</span>
-                <span>✓ AI-powered</span>
-              </div>
-            </div>
-          </div>
-        </section>
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-gradient-to-br from-violet-500/20 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+                    </div>
 
-        {/* Trusted By Marquee Section */}
-        <div className="py-12 relative w-full overflow-hidden bg-background">
-            <div className="flex">
-                <div className="flex space-x-16 flex-shrink-0 items-center animate-marquee">
-                    <NexusCorpLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <ApexDigitalLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <QuantumLeapLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <StellarSolutionsLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <FusionWorksLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <ZenithIncLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                </div>
-                {/* Duplicate for seamless loop */}
-                <div className="flex space-x-16 flex-shrink-0 items-center animate-marquee" aria-hidden="true">
-                    <NexusCorpLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <ApexDigitalLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <QuantumLeapLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <StellarSolutionsLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <FusionWorksLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                    <ZenithIncLogo className="h-8 text-text-secondary hover:text-white transition-colors" />
-                </div>
-            </div>
-        </div>
-
-        {/* Product Showcase Section */}
-        <section id="showcase" className="py-24 bg-surface">
-            <div className="container mx-auto px-6 lg:px-8">
-                <div className="text-center mb-16 animate-fadeInUp">
-                    <h2 className="text-4xl font-bold">The Future of Bot Building is Visual</h2>
-                    <p className="text-text-secondary mt-2 max-w-2xl mx-auto">Stop wrestling with code. Start designing conversations with our intuitive, powerful editor.</p>
-                </div>
-                {/* Laptop Mockup */}
-                <div className="relative w-full max-w-5xl mx-auto aspect-video animate-fadeInUp" style={{ animationDelay: '200ms' }}>
-                    <div className="absolute inset-0 bg-input rounded-2xl p-2 sm:p-4">
-                        <div className="bg-background w-full h-full rounded-lg overflow-hidden border border-input/50 p-4 flex gap-4">
-                            {/* Mock Sidebar */}
-                            <div className="w-1/4 h-full bg-surface/50 rounded-md p-3 space-y-3">
-                                <div className="h-8 w-full bg-input rounded"></div>
-                                <div className="h-12 w-full bg-input rounded"></div>
-                                <div className="h-12 w-full bg-input rounded opacity-70"></div>
-                                <div className="h-12 w-full bg-input rounded opacity-70"></div>
+                    <div className="container relative z-10 mx-auto px-6 lg:px-8">
+                        <div className="max-w-5xl mx-auto">
+                            <h1 className="text-6xl md:text-8xl font-black mb-8 leading-tight">
+                                <span className="bg-gradient-to-r from-white via-emerald-200 to-white bg-clip-text text-transparent animate-pulse">
+                                    Create Powerful
+                                </span>
+                                <br />
+                                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                                    Telegram Bots
+                                </span>
+                                <br />
+                                <span className="text-slate-300 text-4xl md:text-6xl font-light">
+                                    Visually.
+                                </span>
+                            </h1>
+                            
+                            <p className="text-xl md:text-2xl text-slate-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+                                Build, test, and deploy complex chat flows with our intuitive drag-and-drop editor.
+                                <br />
+                                <span className="text-emerald-400 font-semibold">Powered by AI</span>, designed for creators. No code required.
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+                                <Link to="/register" className="group relative px-12 py-4 font-bold text-lg text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden">
+                                    <span className="relative z-10">Get Started for Free</span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </Link>
+                                <a href="#showcase" className="px-12 py-4 font-bold text-lg text-slate-300 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-emerald-500/50 rounded-2xl backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95 hover:text-white">
+                                    See it in Action
+                                </a>
                             </div>
-                             {/* Mock Canvas */}
-                            <div className="w-3/4 h-full bg-transparent relative">
-                                <div className="absolute top-[10%] left-[20%] w-40 h-16 bg-brand-green/20 border border-brand-green rounded-lg text-center p-2 text-sm text-white">Start</div>
-                                <div className="absolute top-[45%] left-[10%] w-48 h-20 bg-brand-blue/20 border border-brand-blue rounded-lg p-2 text-sm text-white">Send Message</div>
-                                <div className="absolute top-[45%] right-[10%] w-48 h-20 bg-brand-purple/20 border border-brand-purple rounded-lg p-2 text-sm text-white">Ask for Input</div>
+                            
+                            <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-slate-400">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                                    <span>No code required</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                                    <span>Free to start</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                                    <span>AI-powered</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
+                </section>
 
-        {/* How It Works Section */}
-        <section className="py-24 bg-background">
-            <div className="container mx-auto px-6 lg:px-8">
-                <div className="text-center mb-20 animate-fadeInUp">
-                    <h2 className="text-4xl font-bold">Go From Idea to Live Bot in Minutes</h2>
-                    <p className="text-text-secondary mt-2">A seamless creation process designed for speed.</p>
-                </div>
-                <div className="relative max-w-2xl mx-auto">
-                    {/* Timeline */}
-                    <div className="absolute left-12 top-0 h-full w-0.5 bg-input" aria-hidden="true"></div>
-                    <div className="relative space-y-20">
-                         {/* Step 1 */}
-                        <div className="relative flex items-start animate-fadeInUp" style={{ animationDelay: '200ms' }}>
-                            <div className="w-24 h-24 rounded-full bg-surface flex-shrink-0 flex items-center justify-center border-4 border-input relative z-10">
-                                <DescribeIcon className="w-10 h-10 text-brand-green" />
-                            </div>
-                            <div className="ml-8 pt-2">
-                                <h3 className="text-2xl font-bold mb-2">1. Describe or Choose</h3>
-                                <p className="text-text-secondary">Start by explaining your bot's logic in plain English, using our AI generator. Or, pick a pre-built template to get started instantly.</p>
-                            </div>
+                <div className="py-16 relative overflow-hidden bg-slate-900/50">
+                    <div className="text-center mb-8">
+                        <p className="text-slate-400 text-sm uppercase tracking-wider">Trusted by innovative teams</p>
+                    </div>
+                    <div className="flex whitespace-nowrap">
+                        <div className="flex space-x-16 items-center animate-marquee">
+                            {['NEXUS', 'APEX DIGITAL', 'QUANTUM LEAP', 'STELLAR', 'FUSION WORKS', 'ZENITH'].map((name, i) => (
+                                <CompanyLogo key={i} name={name} className="text-2xl" />
+                            ))}
                         </div>
-                        {/* Step 2 */}
-                        <div className="relative flex items-start animate-fadeInUp" style={{ animationDelay: '400ms' }}>
-                             <div className="w-24 h-24 rounded-full bg-surface flex-shrink-0 flex items-center justify-center border-4 border-input relative z-10">
-                                <CustomizeIcon className="w-10 h-10 text-brand-purple" />
-                            </div>
-                            <div className="ml-8 pt-2">
-                                <h3 className="text-2xl font-bold mb-2">2. Customize & Build</h3>
-                                <p className="text-text-secondary">Fine-tune the flow with our powerful visual editor. Drag and drop new blocks, connect them, and configure settings with AI-powered suggestions.</p>
-                            </div>
-                        </div>
-                         {/* Step 3 */}
-                        <div className="relative flex items-start animate-fadeInUp" style={{ animationDelay: '600ms' }}>
-                             <div className="w-24 h-24 rounded-full bg-surface flex-shrink-0 flex items-center justify-center border-4 border-input relative z-10">
-                                <LaunchIcon className="w-10 h-10 text-brand-orange" />
-                            </div>
-                            <div className="ml-8 pt-2">
-                                <h3 className="text-2xl font-bold mb-2">3. Test & Launch</h3>
-                                <p className="text-text-secondary">Test your bot end-to-end with the built-in simulator. Once you're happy, connect it to Telegram with one click and go live!</p>
-                            </div>
+                        <div className="flex space-x-16 items-center animate-marquee" aria-hidden="true">
+                             {['NEXUS', 'APEX DIGITAL', 'QUANTUM LEAP', 'STELLAR', 'FUSION WORKS', 'ZENITH'].map((name, i) => (
+                                <CompanyLogo key={i} name={name} className="text-2xl" />
+                            ))}
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        {/* Features Section */}
-        <section className="py-24 bg-surface">
-          <div className="container mx-auto px-6 lg:px-8">
-            <div className="text-center mb-16 animate-fadeInUp">
-              <h2 className="text-4xl font-bold">The Ultimate No-Code Toolkit</h2>
-              <p className="text-text-secondary mt-2">All the best features in one seamless platform.</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <FeatureCard delay={200}>
-                <VisualBuilderIcon />
-                <h3 className="text-xl font-bold mb-2">Visual Flow Builder</h3>
-                <p className="text-text-secondary">Design complex bot logic with a simple drag-and-drop interface. Connect blocks to create your flow.</p>
-              </FeatureCard>
-              <FeatureCard delay={400}>
-                <AIPoweredIcon />
-                <h3 className="text-xl font-bold mb-2">AI-Powered Creation</h3>
-                <p className="text-text-secondary">Describe your bot in plain English and let our AI generate the entire flow for you in seconds.</p>
-              </FeatureCard>
-              <FeatureCard delay={600}>
-                <RealtimeSimulatorIcon />
-                <h3 className="text-xl font-bold mb-2">Real-time Simulator</h3>
-                <p className="text-text-secondary">Test your bot instantly within the editor to ensure it works perfectly before going live.</p>
-              </FeatureCard>
-            </div>
-          </div>
-        </section>
+                <section id="showcase" className="py-24 bg-gradient-to-b from-slate-900/50 to-slate-950">
+                    <div className="container mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-20">
+                            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+                                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                                    The Future of Bot Building
+                                </span>
+                                <br />
+                                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                                    is Visual
+                                </span>
+                            </h2>
+                            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+                                Stop wrestling with code. Start designing conversations with our intuitive, powerful editor.
+                            </p>
+                        </div>
+                        
+                        <div className="relative w-full max-w-7xl mx-auto">
+                            <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-4 shadow-2xl shadow-emerald-500/10">
+                                <div className="bg-slate-950 w-full h-96 md:h-[500px] rounded-2xl overflow-hidden border border-slate-700/50 p-6 flex gap-6">
+                                    <div className="w-1/4 h-full bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-xl p-4 space-y-4 backdrop-blur-xl">
+                                        <div className="h-10 w-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-lg border border-emerald-500/30"></div>
+                                        <div className="h-16 w-full bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-lg border border-violet-500/30"></div>
+                                        <div className="h-16 w-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30"></div>
+                                        <div className="h-16 w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30"></div>
+                                    </div>
+                                    
+                                    <div className="w-3/4 h-full relative">
+                                        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                                            <defs>
+                                                <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
+                                                    <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.4" />
+                                                </linearGradient>
+                                            </defs>
+                                            <path 
+                                                d="M100 80 Q200 120 300 180" 
+                                                stroke="url(#connectionGradient)" 
+                                                strokeWidth="3" 
+                                                fill="none"
+                                                className="animate-pulse"
+                                            />
+                                            <path 
+                                                d="M300 200 Q400 240 500 180" 
+                                                stroke="url(#connectionGradient)" 
+                                                strokeWidth="3" 
+                                                fill="none"
+                                                className="animate-pulse"
+                                                style={{ animationDelay: '0.5s' }}
+                                            />
+                                        </svg>
+                                        
+                                        <div className="absolute top-[15%] left-[15%] w-44 h-20 bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border-2 border-emerald-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-emerald-500/20">
+                                            <div className="text-white font-semibold text-sm">🚀 Start</div>
+                                            <div className="text-emerald-200 text-xs">Entry point</div>
+                                        </div>
+                                        
+                                        <div className="absolute top-[45%] left-[5%] w-52 h-24 bg-gradient-to-br from-violet-500/30 to-violet-600/20 border-2 border-violet-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-violet-500/20">
+                                            <div className="text-white font-semibold text-sm">💬 Send Message</div>
+                                            <div className="text-violet-200 text-xs">"Welcome to our bot!"</div>
+                                        </div>
+                                        
+                                        <div className="absolute top-[45%] right-[5%] w-52 h-24 bg-gradient-to-br from-amber-500/30 to-amber-600/20 border-2 border-amber-400/50 rounded-xl p-3 backdrop-blur-xl shadow-lg shadow-amber-500/20">
+                                            <div className="text-white font-semibold text-sm">❓ Ask Input</div>
+                                            <div className="text-amber-200 text-xs">Get user response</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-        {/* Final CTA Section */}
-        <section className="py-24 text-center bg-background">
-          <div className="container mx-auto px-6 lg:px-8 animate-fadeInUp">
-            <h2 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">Ready to Build Your Bot?</h2>
-            <p className="text-text-secondary text-lg mb-10">Join today and start creating amazing Telegram bots in minutes.</p>
-            <Link
-              to="/register"
-              className="inline-block py-4 px-10 font-bold text-lg text-white bg-gradient-to-r from-brand-green to-green-400 rounded-lg hover:opacity-90 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 shadow-lg shadow-brand-green/30 hover:shadow-glow-green"
-            >
-              Sign Up for Free
-            </Link>
-          </div>
-        </section>
-      </main>
+                <section className="py-24 bg-slate-950">
+                    <div className="container mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-20">
+                            <h2 className="text-5xl font-bold mb-6">
+                                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                                    Go From Idea to Live Bot
+                                </span>
+                                <br />
+                                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                                    in Minutes
+                                </span>
+                            </h2>
+                            <p className="text-xl text-slate-400">A seamless creation process designed for speed.</p>
+                        </div>
+                        
+                        <div className="relative max-w-4xl mx-auto">
+                            <div className="absolute left-16 top-0 h-full w-1 bg-gradient-to-b from-emerald-500 via-violet-500 to-amber-500 opacity-50"></div>
+                            
+                            <div className="relative space-y-24">
+                                {[
+                                    { icon: DescribeIcon, color: 'emerald', title: '1. Describe or Choose', desc: 'Start by explaining your bot\'s logic in plain English, using our AI generator. Or, pick a pre-built template to get started instantly.' },
+                                    { icon: CustomizeIcon, color: 'violet', title: '2. Customize & Build', desc: 'Fine-tune the flow with our powerful visual editor. Drag and drop new blocks, connect them, and configure settings with AI-powered suggestions.' },
+                                    { icon: LaunchIcon, color: 'amber', title: '3. Test & Launch', desc: 'Test your bot end-to-end with the built-in simulator. Once you\'re happy, connect it to Telegram with one click and go live!' }
+                                ].map((step, i) => (
+                                    <div key={i} className="relative flex items-start">
+                                        <div className={`w-32 h-32 rounded-3xl bg-gradient-to-br from-${step.color}-500/20 to-${step.color}-600/10 flex-shrink-0 flex items-center justify-center border-4 border-${step.color}-500/30 relative z-10 backdrop-blur-xl shadow-lg shadow-${step.color}-500/20`}>
+                                            <step.icon className={`w-12 h-12 text-${step.color}-400`} />
+                                        </div>
+                                        <div className="ml-12 pt-8">
+                                            <h3 className="text-3xl font-bold mb-4 text-white">{step.title}</h3>
+                                            <p className="text-lg text-slate-400 leading-relaxed max-w-2xl">{step.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-      {/* Footer */}
-      <footer className="py-8 bg-surface border-t border-input">
-        <div className="container mx-auto px-6 lg:px-8 text-center text-text-secondary">
-          <p>&copy; {new Date().getFullYear()} TeleBot Constructor. All rights reserved.</p>
+                <section className="py-24 bg-gradient-to-b from-slate-950 to-slate-900">
+                    <div className="container mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-20">
+                            <h2 className="text-5xl font-bold mb-6">
+                                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                                    The Ultimate
+                                </span>
+                                <br />
+                                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                                    No-Code Toolkit
+                                </span>
+                            </h2>
+                            <p className="text-xl text-slate-400">All the best features in one seamless platform.</p>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-3 gap-8">
+                            <FeatureCard delay={200}>
+                                <VisualBuilderIcon />
+                                <h3 className="text-2xl font-bold mb-4 text-white">Visual Flow Builder</h3>
+                                <p className="text-slate-400 leading-relaxed">Design complex bot logic with a simple drag-and-drop interface. Connect blocks to create your flow.</p>
+                            </FeatureCard>
+                            
+                            <FeatureCard delay={400}>
+                                <AIPoweredIcon />
+                                <h3 className="text-2xl font-bold mb-4 text-white">AI-Powered Creation</h3>
+                                <p className="text-slate-400 leading-relaxed">Describe your bot in plain English and let our AI generate the entire flow for you in seconds.</p>
+                            </FeatureCard>
+                            
+                            <FeatureCard delay={600}>
+                                <RealtimeSimulatorIcon />
+                                <h3 className="text-2xl font-bold mb-4 text-white">Real-time Simulator</h3>
+                                <p className="text-slate-400 leading-relaxed">Test your bot instantly within the editor to ensure it works perfectly before going live.</p>
+                            </FeatureCard>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="py-32 text-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+                    <div className="absolute inset-0">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse"></div>
+                        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-violet-500/15 to-purple-500/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gradient-to-r from-amber-500/15 to-orange-500/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+                    </div>
+
+                    <div className="container relative z-10 mx-auto px-6 lg:px-8">
+                        <h2 className="text-6xl md:text-7xl font-black mb-6">
+                            <span className="bg-gradient-to-r from-white via-emerald-200 to-white bg-clip-text text-transparent">
+                                Ready to Build
+                            </span>
+                            <br />
+                            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                                Your Bot?
+                            </span>
+                        </h2>
+                        <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+                            Join thousands of creators and start building amazing Telegram bots in minutes, not hours.
+                        </p>
+                        <Link to="/register" className="group relative px-16 py-5 font-bold text-xl text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-500 hover:scale-110 active:scale-95 overflow-hidden">
+                            <span className="relative z-10">Sign Up for Free</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform translate-x-full group-hover:translate-x-0"></div>
+                        </Link>
+                        
+                        <div className="mt-8 text-sm text-slate-500">
+                            Start building today • No credit card required
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer className="py-12 bg-slate-950 border-t border-slate-800/50">
+                <div className="container mx-auto px-6 lg:px-8 text-center text-slate-500">
+                    <div className="flex justify-center items-center gap-2 mb-4">
+                        <Logo className="h-6 w-6" />
+                        <span className="font-semibold">TeleBot Constructor</span>
+                    </div>
+                    <p>&copy; {new Date().getFullYear()} TeleBot Constructor. All rights reserved.</p>
+                </div>
+            </footer>
         </div>
-      </footer>
-    </div>
-  );
+    );
 };
 
 export default LandingPage;

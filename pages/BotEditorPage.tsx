@@ -231,16 +231,16 @@ const BotEditorPageInternal: React.FC = () => {
   );
 
   return (
-    <div className="h-screen w-full flex flex-col -m-8 bg-background overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
-       <div className="flex justify-between items-center p-4 bg-surface border-b border-input flex-shrink-0 z-10">
+    <div className="h-[calc(100vh-80px)] w-full flex flex-col bg-background overflow-hidden" onContextMenu={(e) => e.preventDefault()}>
+       <div className="flex justify-between items-center p-4 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800 flex-shrink-0 z-10">
             <div className="flex items-center gap-4">
-                 <Link to="/dashboard" className="text-text-secondary hover:text-text-primary transition-colors">&larr; Back to Bots</Link>
-                <h1 className="text-xl font-bold text-text-primary">Editing: <span className="text-brand-green">{botName}</span></h1>
+                 <Link to="/dashboard" className="text-text-secondary hover:text-text-primary transition-colors">&larr; Back to Dashboard</Link>
+                <h1 className="text-xl font-bold text-text-primary">Editing: <span className="text-brand-emerald">{botName}</span></h1>
             </div>
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => setIsSimulatorOpen(true)}
-                    className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-input rounded-lg hover:bg-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-brand-green transition-all duration-200 ease-in-out active:scale-95"
+                    className="flex items-center justify-center gap-2 py-2 px-4 font-semibold text-text-primary bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   <PlayIcon className="h-5 w-5" />
                   Test Bot
@@ -248,7 +248,7 @@ const BotEditorPageInternal: React.FC = () => {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="w-32 flex items-center justify-center gap-2 py-2 px-4 font-semibold text-primary-text bg-primary rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary transition-all duration-200 ease-in-out disabled:opacity-70 active:scale-95"
+                    className="w-36 flex items-center justify-center gap-2 py-2 px-4 font-semibold text-white bg-gradient-to-r from-brand-emerald to-brand-teal rounded-xl hover:shadow-lg hover:shadow-brand-emerald/25 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {showSuccess ? (
                     <>
@@ -285,7 +285,7 @@ const BotEditorPageInternal: React.FC = () => {
                     fitView
                     proOptions={proOptions}
                 >
-                    <Background color="#3A3A3C" gap={24} />
+                    <Background color="#1e293b" gap={24} />
                     <Controls />
                     <MiniMap nodeStrokeWidth={3} zoomable pannable />
                 </ReactFlow>

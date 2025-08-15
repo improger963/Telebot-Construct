@@ -13,7 +13,7 @@ export const imageBlockConfig: BlockConfig = {
   type: 'imageNode',
   name: 'Image',
   icon: ImageIcon,
-  color: 'bg-pink-500',
+  color: 'bg-brand-rose',
   component: ImageNode,
   settingsComponent: ImageSettings,
   initialData: { url: '', caption: '' },
